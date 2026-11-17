@@ -1,0 +1,36 @@
+import express from 'express';
+import {
+  getDashboardStats,
+  getAdminOrders,
+  updateOrderStatus,
+  updateOrderPaymentStatus,
+  getAdminUsers,
+  getAdminFoods,
+  updateUserBlockStatus,
+  updateUserInfo,
+  getNotifications,
+  markNotificationAsRead,
+  deleteNotification,
+  clearAllNotifications,
+} from '../controllers/adminController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
+
+const router = express.Router();
+
+router.route('/dashboard').get(protect, admin, getDashboardStats);
+router.route('/orders').get(protect, admin, getAdminOrders);
+router.route('/orders/:id/status').put(protect, admin, updateOrderStatus);
+router.route('/orders/:id/payment-status').put(protect, admin, updateOrderPaymentStatus);
+router.route('/users').get(protect, admin, getAdminUsers);
+router.route('/users/:id').put(protect, admin, updateUserInfo);
+router.route('/users/:id/block').put(protect, admin, updateUserBlockStatus);
+router.route('/foods').get(protect, admin, getAdminFoods);
+router.route('/notifications')
+  .get(protect, admin, getNotifications)
+  .delete(protect, admin, clearAllNotifications);
+router.route('/notifications/:id')
+  .delete(protect, admin, deleteNotification);
+router.route('/notifications/:id/read')
+  .put(protect, admin, markNotificationAsRead);
+
+export default router;

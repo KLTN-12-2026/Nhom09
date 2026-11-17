@@ -1,0 +1,84 @@
+erDiagram
+    USERS ||--o{ ORDERS : places
+    USERS ||--o{ REVIEWS : writes
+    USERS ||--o{ AICHATS : chats
+    USERS ||--o{ AIQUESTIONLOGS : asks
+    CATEGORIES ||--o{ FOODS : contains
+    FOODS ||--o{ REVIEWS : has
+    FOODS ||--o{ AICHATS : recommended
+
+    USERS {
+        ObjectId _id PK
+        string name
+        string email
+        string password
+        string role
+        object healthProfile "EMBEDDED: height, weight, bmi, conditions, allergies, goal"
+        array favoriteFoods "Ref: Food"
+        number totalSpent
+        string tier "Member, Silver, Gold, Diamond"
+    }
+
+    CATEGORIES {
+        ObjectId _id PK
+        string name "Mon chinh, Mon chay, Do uong..."
+        string description
+    }
+
+    FOODS {
+        ObjectId _id PK
+        string name
+        ObjectId category FK "Ref: Category"
+        number price
+        number discountPrice
+        array images
+        object nutrition "EMBEDDED: calories, protein, carbs, fat"
+        array healthTags "mon chay, it duong, giau dam..."
+        array ingredients "Nguyen lieu"
+        boolean isAvailable
+    }
+
+    ORDERS {
+        ObjectId _id PK
+        ObjectId user FK "Ref: User"
+        array items "EMBEDDED: [{ foodId, name, price, quantity, image }]"
+        object shippingAddress "EMBEDDED: address, city, phone"
+        string paymentMethod "COD, MoMo, VNPay"
+        string paymentStatus "unpaid, paid"
+        string orderStatus "pending, preparing, shipping, completed"
+        number totalAmount
+    }
+
+    REVIEWS {
+        ObjectId _id PK
+        ObjectId user FK "Ref: User"
+        ObjectId food FK "Ref: Food"
+        number rating "1 - 5 sao"
+        string comment
+        array media "Anh, video feedback"
+    }
+
+    AICHATS {
+        ObjectId _id PK
+        ObjectId user FK "Ref: User"
+        string message "Cau hoi cua khach"
+        string response "Tra loi cua AI"
+        array recommendedFoods "Ref: Food"
+    }
+
+    AIQUESTIONLOGS {
+        ObjectId _id PK
+        ObjectId user FK "Ref: User"
+        string question
+        string aiResponse
+        array topics "Phan loai chu de"
+    }
+
+    CONTACTS {
+        ObjectId _id PK
+        string name
+        string email
+        string message
+        string status "pending, resolved"
+    }
+
