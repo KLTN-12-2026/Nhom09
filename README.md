@@ -181,3 +181,4 @@ Sau khi chạy lệnh `npm run seed`, hệ thống đã sẵn sàng với các t
 | **Quản trị viên (Admin)** | `thanhtinnguyen870@gmailcom` | `123456` | Truy cập toàn quyền vào trang Dashboard Quản trị, quản lý đơn hàng, thực đơn, khách hàng, doanh thu và nhật ký AI. |
 | **Khách hàng thân thiết** | `nhu@gmail.com` | `123456` | Tài khoản Hạng Vàng, đã có hồ sơ bệnh lý, đơn hàng mẫu, giỏ hàng và danh sách món yêu thích. |
 | **Khách hàng thường** | `user@foodcare.ai` | `123456` | Tài khoản mới, dùng để thử nghiệm luồng đặt hàng và cập nhật hồ sơ thể trạng BMI. |
+
