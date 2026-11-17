@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Check, X } from 'lucide-react';
 
-/* ── Same animated background elements as Login ── */
 const ORBS = [
   { emoji: '🥗', size: 52, x: 6,  y: 10, dur: 7,  delay: 0   },
   { emoji: '🍜', size: 44, x: 87, y: 7,  dur: 9,  delay: 1.5 },
@@ -39,7 +38,6 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  /* lock scroll on mount, restore on unmount */
   useEffect(() => {
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
@@ -134,7 +132,6 @@ const Register = () => {
         .mq-rtl-r { animation: marquee-rtl-r var(--mq-dur,28s) linear infinite; }
       `}</style>
 
-      {/* ── Full-page background ── */}
       <div
         className="fixed inset-0 w-screen h-screen overflow-hidden"
         style={{
@@ -142,7 +139,7 @@ const Register = () => {
           zIndex: 0,
         }}
       >
-        {/* Rotating rings */}
+
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {[520, 700, 900, 1100].map((sz, i) => (
             <div key={sz} style={{
@@ -154,7 +151,6 @@ const Register = () => {
           ))}
         </div>
 
-        {/* Blob lights */}
         {[
           { color: 'rgba(52,211,153,0.18)',  size: 420, x: '10%', y: '5%',  dur: '22s' },
           { color: 'rgba(139,92,246,0.15)',  size: 380, x: '65%', y: '60%', dur: '28s', delay: '4s' },
@@ -170,7 +166,6 @@ const Register = () => {
           }} />
         ))}
 
-        {/* Particles */}
         {PARTICLES.map(p => (
           <div key={p.id} className="reg-particle absolute rounded-full" style={{
             left: `${p.x}%`, top: `${p.y}%`,
@@ -181,7 +176,6 @@ const Register = () => {
           }} />
         ))}
 
-        {/* Floating food orbs */}
         {ORBS.map((o, i) => (
           <div key={i} className="reg-orb absolute select-none pointer-events-none"
             style={{
@@ -195,13 +189,11 @@ const Register = () => {
           </div>
         ))}
 
-        {/* Grid */}
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)',
           backgroundSize: '60px 60px',
         }} />
 
-        {/* ── 3D Marquee text ── */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden flex flex-col justify-around"
           style={{ perspective: '600px', perspectiveOrigin: '50% 50%' }}>
           {[
@@ -243,9 +235,8 @@ const Register = () => {
         </div>
       </div>
 
-      {/* ── Page wrapper ── */}
       <div className="relative z-10 flex items-center justify-center px-4 py-6 min-h-[calc(100vh-80px)] overflow-y-auto">
-        {/* ── Glassmorphism card ── */}
+
         <div className="reg-card-anim w-full max-w-[420px]" style={{
           background: 'rgba(255,255,255,0.07)',
           backdropFilter: 'blur(28px)',
@@ -259,13 +250,11 @@ const Register = () => {
           scrollbarWidth: 'none',
         }}>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 mb-6 group">
             <img src="/logo.png" alt="FoodCare" className="h-8 w-auto object-contain drop-shadow-lg transition-transform group-hover:scale-110" />
             <span className="text-lg font-black text-white tracking-tight drop-shadow">FoodCare</span>
           </Link>
 
-          {/* Heading */}
           <h1 className="text-2xl font-black mb-1" style={{
             background: 'linear-gradient(90deg,#34d399,#6ee7b7,#34d399)',
             backgroundSize: '200% auto',
@@ -282,9 +271,8 @@ const Register = () => {
             </Link>
           </p>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
-            {/* Name */}
+
             <div>
               <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">Họ và tên</label>
               <input
@@ -299,7 +287,6 @@ const Register = () => {
               />
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">Email</label>
               <input
@@ -314,7 +301,6 @@ const Register = () => {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">Mật khẩu</label>
               <div className="relative">
@@ -334,7 +320,6 @@ const Register = () => {
                 </button>
               </div>
 
-              {/* Strength bar */}
               {password.length > 0 && (
                 <div className="mt-2">
                   <div className="flex gap-1 mb-1">
@@ -361,7 +346,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">Xác nhận mật khẩu</label>
               <div className="relative">
@@ -394,7 +378,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isLoading}
@@ -426,3 +409,4 @@ const Register = () => {
 };
 
 export default Register;
+

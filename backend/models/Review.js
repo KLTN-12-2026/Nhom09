@@ -15,7 +15,7 @@ const reviewSchema = mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    // Lưu lại tên tại thời điểm đánh giá (phòng khi user đổi tên sau)
+
     name: {
       type: String,
       default: '',
@@ -35,7 +35,7 @@ const reviewSchema = mongoose.Schema(
       type: String,
       default: '',
     },
-    // Lưu cả ảnh và video đính kèm
+
     images: {
       type: [reviewMediaSchema],
       default: [],
@@ -53,3 +53,4 @@ reviewSchema.index({ food: 1, createdAt: -1 });
 
 const Review = mongoose.model('Review', reviewSchema);
 export default Review;
+

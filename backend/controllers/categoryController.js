@@ -9,9 +9,6 @@ const createSlug = (value) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-// @desc    Fetch all categories
-// @route   GET /api/categories
-// @access  Public
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find({ isActive: true });
@@ -21,9 +18,6 @@ export const getCategories = async (req, res) => {
   }
 };
 
-// @desc    Create category
-// @route   POST /api/categories
-// @access  Private/Admin
 export const createCategory = async (req, res) => {
   try {
     const { name, description, image, icon, color } = req.body;
@@ -52,3 +46,4 @@ export const createCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

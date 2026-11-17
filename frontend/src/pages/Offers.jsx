@@ -112,7 +112,7 @@ const CheckValue = ({ value, index, highlight }) => {
 
 const CrystalHeroCard = ({ children, className = '', glowColor = '' }) => (
   <div className={`relative flex h-48 w-36 flex-col items-center justify-center rounded-2xl border bg-white/40 p-3 text-center shadow-glass backdrop-blur-xl transition-transform duration-700 hover:-translate-y-3 ${className} ${glowColor}`}>
-    {/* Inner glass reflection */}
+
     <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-white/10 via-white/50 to-transparent pointer-events-none" />
     <div className="relative z-10 flex flex-col items-center">{children}</div>
   </div>
@@ -121,7 +121,7 @@ const CrystalHeroCard = ({ children, className = '', glowColor = '' }) => (
 const Offers = () => {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#F8F9FB] text-dark font-sans relative">
-      {/* Global Background Orbs */}
+
       <div className="absolute top-0 left-0 w-full h-[800px] overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-5%] w-96 h-96 rounded-full bg-emerald-300/30 blur-[100px] animate-pulse-glow" />
         <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-amber-200/20 blur-[120px] animate-pulse-glow" style={{animationDelay: '1s'}} />
@@ -131,8 +131,7 @@ const Offers = () => {
       <section className="relative z-10 px-4 py-12 md:py-16">
         <div className="container mx-auto min-w-[980px] max-w-6xl">
           <div className="grid grid-cols-[0.95fr_1.05fr] items-center gap-12">
-            
-            {/* Left Content */}
+
             <div className="relative z-20">
               <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-emerald-200 bg-emerald-50/50 backdrop-blur-sm text-sm font-bold text-emerald-700 shadow-sm">
                 <Sparkles size={16} className="inline mr-2 -mt-0.5" />
@@ -156,29 +155,25 @@ const Offers = () => {
               </div>
             </div>
 
-            {/* Right 3D Showcase */}
             <div className="relative min-h-[450px] flex justify-center items-center perspective-[1000px]">
-              
-              {/* Floating Elements */}
+
               <div className="absolute top-10 left-10 animate-float-delay z-30">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-200 to-amber-500 shadow-glow-gold flex items-center justify-center text-white border border-white/40 backdrop-blur-sm">
                   <Star size={20} fill="currentColor" />
                 </div>
               </div>
-              
+
               <div className="absolute bottom-20 right-10 animate-float z-30">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-200 to-emerald-500 shadow-glow-emerald flex items-center justify-center text-white border border-white/40 backdrop-blur-sm rotate-12">
                   <span className="font-black text-xl">%</span>
                 </div>
               </div>
 
-              {/* Pedestal Base */}
               <div className="absolute bottom-10 left-1/2 w-[400px] h-[100px] -translate-x-1/2 rounded-[50%] bg-white/40 border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.1),inset_0_-10px_20px_rgba(255,255,255,0.8)] backdrop-blur-md z-0" style={{ transform: 'translateX(-50%) rotateX(60deg)' }}></div>
               <div className="absolute bottom-6 left-1/2 w-[350px] h-[80px] -translate-x-1/2 rounded-[50%] bg-gradient-to-r from-emerald-200/50 via-amber-200/50 to-violet-200/50 blur-xl z-0"></div>
 
-              {/* 3D Crystal Cards */}
               <div className="relative z-20 w-full h-full flex justify-center items-end pb-16 gap-4">
-                
+
                 <CrystalHeroCard className="mb-4 animate-float border-emerald-200" glowColor="shadow-glow-emerald">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center mb-4 shadow-inner border border-emerald-50">
                     <UserRound className="text-emerald-600 drop-shadow-md" size={28} />
@@ -207,7 +202,7 @@ const Offers = () => {
                 </CrystalHeroCard>
 
               </div>
-              
+
               <div className="absolute right-0 top-10 rounded-2xl border border-white/60 bg-white/50 backdrop-blur-md px-5 py-3 text-center shadow-glass z-30 transform rotate-3 hover:rotate-0 transition-transform">
                 <p className="text-xs font-black uppercase tracking-widest text-emerald-700">Ăn lành</p>
                 <p className="text-xs font-black uppercase tracking-widest text-emerald-700">Sống khỏe</p>
@@ -217,7 +212,6 @@ const Offers = () => {
         </div>
       </section>
 
-      {/* Tiers Section */}
       <section id="tiers" className="relative z-10 px-4 py-16">
         <div className="container mx-auto min-w-[980px] max-w-6xl">
           <div className="mb-12 text-center">
@@ -254,7 +248,7 @@ const Offers = () => {
                       </li>
                     ))}
                   </ul>
-                  
+
                   {tier.featured && (
                     <div className="mt-8">
                        <button className="w-full neo-button py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold shadow-glow-gold">
@@ -269,13 +263,12 @@ const Offers = () => {
         </div>
       </section>
 
-      {/* Benefits Table Section */}
       <section className="relative z-10 px-4 pb-16">
         <div className="container mx-auto min-w-[980px] max-w-6xl">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-black text-slate-800 drop-shadow-sm">Bảng quyền lợi</h2>
           </div>
-          
+
           <div className="glass-premium rounded-3xl overflow-hidden p-2">
             <div className="rounded-2xl overflow-hidden border border-white/40 bg-white/30 backdrop-blur-md">
               <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr] border-b border-white/40 bg-white/50 text-xs font-black uppercase text-slate-800 md:text-sm">
@@ -309,17 +302,16 @@ const Offers = () => {
         </div>
       </section>
 
-      {/* How to level up */}
       <section className="relative z-10 px-4 pb-20">
         <div className="container mx-auto min-w-[980px] max-w-6xl">
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-black text-slate-800 drop-shadow-sm">Cách lên hạng</h2>
           </div>
-          
+
           <div className="relative">
-            {/* Connecting light beam */}
+
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-emerald-200 via-amber-200 to-emerald-200 -translate-y-1/2 z-0 hidden md:block shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-            
+
             <div className="grid grid-cols-3 gap-8 relative z-10">
               {steps.map((step, index) => {
                 const Icon = step.icon;
@@ -342,7 +334,7 @@ const Offers = () => {
               })}
             </div>
           </div>
-          
+
           <div className="mt-10 flex items-center justify-center">
             <div className="inline-flex items-center gap-2 rounded-full glass-premium px-6 py-2.5 text-sm font-bold text-slate-700">
               <Sparkles className="text-amber-500" size={18} />
@@ -352,17 +344,16 @@ const Offers = () => {
         </div>
       </section>
 
-      {/* CTA Banner */}
       <section className="relative z-10 px-4 pb-16">
         <div className="container mx-auto min-w-[980px] max-w-6xl">
           <div className="relative overflow-hidden rounded-3xl glass-premium p-8 md:p-12 border-emerald-200/50 shadow-glow-emerald">
-            {/* Background elements */}
+
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-300/20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-300/20 rounded-full blur-3xl"></div>
-            
+
             <div className="grid grid-cols-[0.4fr_1fr_0.3fr] items-center gap-8 relative z-10">
               <div className="relative">
-                {/* 3D Image representation */}
+
                 <div className="absolute inset-0 bg-emerald-100 rounded-3xl blur-md transform translate-y-4 scale-95 opacity-60"></div>
                 <img
                   src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=700&auto=format&fit=crop"
@@ -370,7 +361,7 @@ const Offers = () => {
                   className="relative h-48 w-full rounded-3xl object-cover shadow-2xl border-4 border-white/50"
                 />
               </div>
-              
+
               <div className="text-center px-4">
                 <h2 className="text-3xl font-black text-slate-800 md:text-4xl drop-shadow-sm mb-4">Bắt đầu tích lũy ưu đãi ngay hôm nay</h2>
                 <p className="text-slate-600 text-lg font-medium max-w-xl mx-auto">Thưởng thức những món ăn lành mạnh, nhận ưu đãi hấp dẫn và nâng hạng cùng FoodCare.</p>
@@ -385,7 +376,7 @@ const Offers = () => {
                   </Link>
                 </div>
               </div>
-              
+
               <div className="flex justify-center relative">
                 <div className="absolute inset-0 bg-amber-100 rounded-3xl blur-md transform translate-y-4 scale-95 opacity-60"></div>
                 <div className="relative flex h-40 w-40 items-center justify-center rounded-[2rem] glass-card text-amber-500 shadow-2xl border-2 border-white/60 transform rotate-6 hover:rotate-0 transition-transform duration-500">
@@ -401,3 +392,4 @@ const Offers = () => {
 };
 
 export default Offers;
+

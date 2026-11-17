@@ -24,7 +24,6 @@ export const loginWithGoogle = async (req, res) => {
 
     let payload = null;
 
-    // 1. Thá»­ xÃ¡c thá»±c qua thÆ° viá»‡n google-auth-library vá»›i timeout 3.5s (trÃ¡nh ngháº½n máº¡ng gÃ¢y 502)
     try {
       const ticket = await Promise.race([
         googleClient.verifyIdToken({
@@ -36,8 +35,7 @@ export const loginWithGoogle = async (req, res) => {
       payload = ticket.getPayload();
     } catch (verifyError) {
       console.warn('googleClient.verifyIdToken gáº·p lá»—i/timeout, chuyá»ƒn sang xÃ¡c thá»±c dá»± phÃ²ng...', verifyError.message);
-      
-      // 2. Dá»± phÃ²ng qua Google OAuth2 TokenInfo REST API (timeout 2.5s)
+
       try {
         const controller = new AbortController();
         const fetchTimeout = setTimeout(() => controller.abort(), 2500);
@@ -52,11 +50,11 @@ export const loginWithGoogle = async (req, res) => {
           throw new Error('TokenInfo API returned not ok');
         }
       } catch (tokenInfoError) {
-        // 3. Dá»± phÃ²ng cáº¥p 3: Decode token JWT trá»±c tiáº¿p (xá»­ lÃ½ ngay láº­p tá»©c trong 0.1ms khi offline/máº¡ng quá»‘c táº¿ cháº­m)
+
         try {
           const decoded = jwt.decode(credential);
           if (decoded && decoded.email) {
-            // Kiá»ƒm tra audience náº¿u cÃ³ Client ID
+
             if (GOOGLE_CLIENT_ID && decoded.aud !== GOOGLE_CLIENT_ID && decoded.azp !== GOOGLE_CLIENT_ID) {
               console.warn('[Google Auth] Decode audience khÃ´ng khá»›p Client ID:', decoded.aud);
             }
@@ -81,10 +79,9 @@ export const loginWithGoogle = async (req, res) => {
       return res.status(401).json({ message: 'TÃ i khoáº£n Google chÆ°a Ä‘Æ°á»£c xÃ¡c minh hoáº·c thiáº¿u thÃ´ng tin.' });
     }
 
-    // Äáº£m báº£o token Ä‘Æ°á»£c cáº¥p cho Ä‘Ãºng Google Client ID cá»§a á»©ng dá»¥ng (náº¿u cÃ³ cáº¥u hÃ¬nh vÃ  cÃ³ aud/azp)
     if (GOOGLE_CLIENT_ID && payload.aud && payload.aud !== GOOGLE_CLIENT_ID && payload.azp !== GOOGLE_CLIENT_ID) {
       console.warn(`[Google Auth] Mismatch Client ID: aud=${payload.aud}, azp=${payload.azp} vs config=${GOOGLE_CLIENT_ID}`);
-      // KhÃ´ng cháº·n cá»©ng náº¿u Ä‘ang cháº¡y á»Ÿ mÃ´i trÆ°á»ng phÃ¡t triá»ƒn local
+
       if (process.env.NODE_ENV === 'production') {
         return res.status(401).json({ message: 'MÃ£ xÃ¡c thá»±c Google khÃ´ng khá»›p vá»›i há»‡ thá»‘ng.' });
       }
@@ -136,9 +133,6 @@ export const loginWithGoogle = async (req, res) => {
   }
 };
 
-// @desc    Dev Mode: Simulate Google Login (há»— trá»£ mÃ´i trÆ°á»ng phÃ¡t triá»ƒn khi Google Cloud Console chÆ°a thÃªm localhost:5173)
-// @route   POST /api/auth/google/dev-simulate
-// @access  Public (Dev)
 export const devSimulateGoogleLogin = async (req, res) => {
   try {
     const email = (req.body.email || ADMIN_EMAIL).toLowerCase().trim();
@@ -183,9 +177,6 @@ export const devSimulateGoogleLogin = async (req, res) => {
   }
 };
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 export const registerUser = async (req, res) => {
   try {
     const name = String(req.body.name || '').trim();
@@ -242,9 +233,6 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// @desc    Auth user & get token
-// @route   POST /api/auth/login
-// @access  Public
 export const loginUser = async (req, res) => {
   try {
     const email = String(req.body.email || '').trim().toLowerCase();
@@ -290,9 +278,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/me
-// @access  Private
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password').populate('favoriteFoods');
@@ -311,9 +296,6 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// @desc    Update user profile
-// @route   PUT /api/auth/profile
-// @access  Private
 export const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -325,7 +307,7 @@ export const updateUserProfile = async (req, res) => {
       user.avatar = getBodyValue(req.body, 'avatar', user.avatar);
 
       const updatedUser = await user.save();
-      
+
       res.json({
         _id: updatedUser._id,
         name: updatedUser.name,
@@ -346,9 +328,6 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
-// @desc    Change user password
-// @route   PUT /api/auth/change-password
-// @access  Private
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -385,9 +364,6 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// @desc    Get favorite foods
-// @route   GET /api/auth/favorites
-// @access  Private
 export const getFavorites = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate('favoriteFoods');
@@ -398,9 +374,6 @@ export const getFavorites = async (req, res) => {
   }
 };
 
-// @desc    Add favorite food
-// @route   POST /api/auth/favorites/:foodId
-// @access  Private
 export const addFavorite = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -409,26 +382,20 @@ export const addFavorite = async (req, res) => {
     const foodId = req.params.foodId;
     const index = user.favoriteFoods.findIndex((id) => id.toString() === foodId);
 
-    // 3. Kiá»ƒm tra tráº¡ng thÃ¡i mÃ³n Äƒn trong danh sÃ¡ch yÃªu thÃ­ch
     if (index !== -1) {
-      // 3.2. MÃ³n Äƒn Ä‘Ã£ tá»“n táº¡i trong danh sÃ¡ch, hiá»ƒn thá»‹ thÃ´ng bÃ¡o vÃ  káº¿t thÃºc
+
       return res.status(400).json({ message: 'MÃ³n Äƒn Ä‘Ã£ tá»“n táº¡i trong danh sÃ¡ch yÃªu thÃ­ch', isFavorited: true });
     }
 
-    // 4. ThÃªm mÃ³n Äƒn vÃ o danh sÃ¡ch yÃªu thÃ­ch
     user.favoriteFoods.push(foodId);
     await user.save();
-    
-    // 5. ThÃ´ng bÃ¡o thÃªm thÃ nh cÃ´ng
+
     res.json({ message: 'ThÃªm vÃ o danh sÃ¡ch yÃªu thÃ­ch thÃ nh cÃ´ng', isFavorited: true, favoriteFoods: user.favoriteFoods });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Remove favorite food
-// @route   DELETE /api/auth/favorites/:foodId
-// @access  Private
 export const removeFavorite = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -448,9 +415,6 @@ export const removeFavorite = async (req, res) => {
   }
 };
 
-// @desc    Update user health profile
-// @route   PUT /api/auth/health-profile
-// @access  Private
 export const updateHealthProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -477,5 +441,4 @@ export const updateHealthProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 

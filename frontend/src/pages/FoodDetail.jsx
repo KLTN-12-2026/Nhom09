@@ -36,7 +36,6 @@ const FoodDetail = () => {
     return checkFoodHealthConflict(food, healthProfile);
   }, [food, healthProfile]);
 
-  // Nén ảnh phía client dùng Canvas API trước khi upload
   const compressImageClient = (file, { maxWidth = 1200, quality = 0.82 } = {}) =>
     new Promise((resolve) => {
       const img = new Image();
@@ -122,7 +121,7 @@ const FoodDetail = () => {
     let mediaUrls = [];
     if (mediaFiles.length > 0) {
       try {
-        // Nén ảnh trước khi upload (bỏ qua video)
+
         const processedFiles = await Promise.all(
           mediaFiles.map((file) =>
             file.type.startsWith('image/')
@@ -239,7 +238,7 @@ const FoodDetail = () => {
 
   return (
     <div className="container mx-auto px-4 md:px-12 py-10">
-      {/* Back button */}
+
       <Link
         to={backToFoods}
         className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-primary hover:text-white hover:border-primary px-5 py-2.5 rounded-full font-semibold mb-8 transition-all shadow-sm group"
@@ -248,9 +247,8 @@ const FoodDetail = () => {
         Quay lại thực đơn
       </Link>
 
-      {/* Main Card */}
       <div className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
-        {/* Image */}
+
         <div className="md:w-1/2 flex flex-col">
           <div className="h-[380px] md:h-[450px] relative overflow-hidden">
             <img
@@ -261,7 +259,7 @@ const FoodDetail = () => {
                 !food.isAvailable ? 'opacity-40 grayscale' : ''
               }`}
             />
-            {/* Overlay Tạm hết */}
+
             {!food.isAvailable && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/35 backdrop-blur-[1px]">
                 <span className="bg-gray-900/85 text-white text-base font-bold px-6 py-2.5 rounded-full tracking-wide shadow-xl border border-white/20">
@@ -269,7 +267,7 @@ const FoodDetail = () => {
                 </span>
               </div>
             )}
-            {/* Health tags */}
+
             {food.isAvailable && (
               <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                 {food.healthTags?.map((tag, idx) => (
@@ -279,10 +277,10 @@ const FoodDetail = () => {
                 ))}
               </div>
             )}
-            {/* Gradient overlay bottom */}
+
             <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/20 to-transparent md:hidden" />
           </div>
-          {/* Thumbnails */}
+
           {food.images?.length > 1 && (
             <div className="flex gap-2 p-4 bg-gray-50 overflow-x-auto">
               {food.images.map((img, idx) => (
@@ -300,14 +298,12 @@ const FoodDetail = () => {
           )}
         </div>
 
-        {/* Details */}
         <div className="md:w-1/2 p-8 md:p-10 flex flex-col">
           <span className="inline-block text-xs font-bold text-primary uppercase tracking-widest bg-primary-light px-3 py-1 rounded-full mb-3 self-start">
             {food.category?.name}
           </span>
           <h1 className="text-3xl md:text-4xl font-extrabold text-dark mb-3 leading-tight">{food.name}</h1>
 
-          {/* Rating summary */}
           {food.ratingAverage > 0 && (
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-0.5">
@@ -330,7 +326,6 @@ const FoodDetail = () => {
           }`}>{food.price.toLocaleString('vi-VN')}đ</p>
           <p className="text-gray-600 mb-6 leading-relaxed">{food.description}</p>
 
-          {/* Nutrition Grid */}
           <div className="grid grid-cols-4 gap-3 mb-6">
             {nutritionItems.map((item) => (
               <div key={item.label} className="bg-gradient-to-b from-gray-50 to-white border border-gray-100 rounded-2xl p-3 text-center shadow-sm">
@@ -341,7 +336,6 @@ const FoodDetail = () => {
             ))}
           </div>
 
-          {/* Info tags */}
           <div className="space-y-3 mb-6">
             <div className="flex items-start gap-2 text-sm">
               <CheckCircle2 size={16} className="text-healthy flex-shrink-0 mt-0.5" />
@@ -367,7 +361,6 @@ const FoodDetail = () => {
               </div>
             )}
 
-            {/* Personal Health & Allergy Guard Notice */}
             {allergyCheck.hasConflict && (
               <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1.5 animate-pulse">
                 <div className="flex items-center gap-2 font-bold text-sm text-rose-700">
@@ -383,7 +376,6 @@ const FoodDetail = () => {
             )}
           </div>
 
-          {/* CTAs */}
           {user?.role !== 'admin' && (
             <div className="mt-auto flex flex-col sm:flex-row gap-3">
               <button
@@ -423,7 +415,6 @@ const FoodDetail = () => {
         </div>
       </div>
 
-      {/* Reviews Section */}
       <div className="mt-10 bg-white rounded-3xl shadow-xl p-8 md:p-10">
         <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
           <MessageSquare className="text-primary" />
@@ -463,8 +454,8 @@ const FoodDetail = () => {
                 {rv.images && rv.images.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3 pl-13">
                     {rv.images.map((media, idx) => (
-                      <div 
-                        key={idx} 
+                      <div
+                        key={idx}
                         className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-gray-200 cursor-pointer group"
                         onClick={() => setPreviewMediaModal(media)}
                       >
@@ -512,7 +503,6 @@ const FoodDetail = () => {
           </div>
         )}
 
-        {/* Review Form */}
         {user ? (
           user.role === 'admin' ? null : !canReview ? (
             <div className="bg-amber-50 text-amber-800 p-4 rounded-2xl flex items-center gap-3 text-sm font-semibold border border-amber-200">
@@ -525,7 +515,7 @@ const FoodDetail = () => {
                 <Star size={20} className="text-amber-400" /> Viết đánh giá của bạn
               </h3>
               <form onSubmit={submitReviewHandler}>
-                {/* Stars */}
+
                 <div className="mb-5">
                   <label className="block text-gray-700 font-semibold mb-2 text-sm">Xếp hạng</label>
                   <div className="flex items-center gap-1 mb-1">
@@ -550,7 +540,7 @@ const FoodDetail = () => {
                     {ratingLabels[hoverRating || rating]}
                   </p>
                 </div>
-                {/* Comment */}
+
                 <div className="mb-4">
                   <label className="block text-gray-700 font-semibold mb-2 text-sm">Bình luận</label>
                   <textarea
@@ -561,14 +551,13 @@ const FoodDetail = () => {
                     placeholder="Chia sẻ cảm nhận của bạn về món ăn này..."
                     required={mediaFiles.length === 0}
                   />
-                  
-                  {/* Media Upload UI */}
+
                   <div className="mb-2">
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-gray-700 font-semibold text-sm">Ảnh/Video đính kèm (Tối đa 5)</label>
                       <span className="text-xs text-gray-500">{mediaFiles.length}/5 file</span>
                     </div>
-                    
+
                     {mediaPreviews.length > 0 && (
                       <div className="flex flex-wrap gap-3 mb-3">
                         {mediaPreviews.map((media, idx) => (
@@ -592,7 +581,7 @@ const FoodDetail = () => {
                         ))}
                       </div>
                     )}
-                    
+
                     {mediaFiles.length < 5 && (
                       <div>
                         <input
@@ -637,28 +626,27 @@ const FoodDetail = () => {
         )}
       </div>
 
-      {/* Media Preview Modal */}
       {previewMediaModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" onClick={() => setPreviewMediaModal(null)}>
-          <button 
+          <button
             className="absolute top-4 right-4 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors"
             onClick={() => setPreviewMediaModal(null)}
           >
             <X size={24} />
           </button>
-          
+
           <div className="max-w-4xl max-h-[90vh] w-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             {previewMediaModal.type === 'video' ? (
-              <video 
-                src={previewMediaModal.url} 
-                controls 
+              <video
+                src={previewMediaModal.url}
+                controls
                 autoPlay
                 className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
               />
             ) : (
-              <img 
-                src={previewMediaModal.url} 
-                alt="Full preview" 
+              <img
+                src={previewMediaModal.url}
+                alt="Full preview"
                 className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
               />
             )}
@@ -670,3 +658,4 @@ const FoodDetail = () => {
 };
 
 export default FoodDetail;
+

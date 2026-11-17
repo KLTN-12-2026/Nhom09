@@ -23,7 +23,6 @@ const categories = [
   { name: "Đồ uống lành mạnh", slug: "do-uong-lanh-manh" },
 ];
 
-// Calo/100g theo bảng người dùng cung cấp từ Bộ Y tế/Viện Dinh dưỡng.
 const caloriePer100g = {
   "Gạo nếp cái": 344,
   "Gạo tẻ giã": 344,
@@ -1340,3 +1339,4 @@ const importData = async () => {
 };
 
 importData();
+

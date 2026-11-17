@@ -59,7 +59,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background blobs */}
+
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="blob bg-primary/10 w-96 h-96 rounded-full -top-20 -left-20" />
         <div className="blob bg-blue-300/10 w-80 h-80 rounded-full top-1/2 right-0" />
@@ -67,7 +67,7 @@ const Contact = () => {
       </div>
 
       <div className="relative z-10 container mx-auto max-w-6xl px-4 py-16">
-        {/* Header */}
+
         <div className="mb-14 text-center">
           <span className="inline-flex items-center gap-2 bg-primary-light text-primary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
             <MessageCircle size={16} /> Liên hệ với chúng tôi
@@ -81,7 +81,7 @@ const Contact = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Left: Contact info */}
+
           <div className="lg:col-span-2 space-y-4">
             {contactInfos.map((info) => (
               <div
@@ -104,7 +104,6 @@ const Contact = () => {
               </div>
             ))}
 
-            {/* Map placeholder */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-48">
               <iframe
                 title="FoodCare Location"
@@ -119,7 +118,6 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Right: Form */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10">
               <h2 className="text-2xl font-bold text-dark mb-6 flex items-center gap-2">
@@ -204,3 +202,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

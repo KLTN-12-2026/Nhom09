@@ -10,9 +10,6 @@ const isValidRating = (rating) => {
   return Number.isInteger(numericRating) && numericRating >= 1 && numericRating <= 5;
 };
 
-// @desc    Fetch all foods
-// @route   GET /api/foods
-// @access  Public
 export const getFoods = async (req, res) => {
   try {
     const keyword = req.query.keyword
@@ -45,7 +42,6 @@ export const getFoods = async (req, res) => {
     const filters = { ...keyword, ...categoryFilter };
     const foods = await Food.find(filters).populate('category', 'name slug');
 
-    // Cache 60 giây phía client, 30 giây stale-while-revalidate
     res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=30');
     res.json(foods);
   } catch (error) {
@@ -53,9 +49,6 @@ export const getFoods = async (req, res) => {
   }
 };
 
-// @desc    Fetch single food by ID
-// @route   GET /api/foods/:id
-// @access  Public
 export const getFoodById = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -73,9 +66,6 @@ export const getFoodById = async (req, res) => {
   }
 };
 
-// @desc    Fetch single food by slug
-// @route   GET /api/foods/slug/:slug
-// @access  Public
 export const getFoodBySlug = async (req, res) => {
   try {
     const food = await Food.findOne({ slug: req.params.slug }).populate('category', 'name slug');
@@ -90,9 +80,6 @@ export const getFoodBySlug = async (req, res) => {
   }
 };
 
-// @desc    Create new review
-// @route   POST /api/foods/:id/reviews
-// @access  Private
 export const createFoodReview = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -106,7 +93,6 @@ export const createFoodReview = async (req, res) => {
         return res.status(400).json({ message: 'Danh gia phai la so nguyen tu 1 den 5.' });
       }
 
-      // KIỂM TRA ĐÃ MUA VÀ HOÀN THÀNH ĐƠN CHƯA
       const completedOrders = await Order.countDocuments({
         user: req.user._id,
         orderStatus: 'completed',
@@ -142,7 +128,6 @@ export const createFoodReview = async (req, res) => {
         images: validMediaUrls,
       });
 
-      // Tạo thông báo cho admin
       const notification = await Notification.create({
         type: 'REVIEW',
         message: `Khách hàng ${req.user.name} đã đánh giá ${Number(rating)} sao cho món "${food.name}".`,
@@ -172,9 +157,6 @@ export const createFoodReview = async (req, res) => {
   }
 };
 
-// @desc    Update user's own food review
-// @route   PUT /api/foods/:id/reviews/:reviewId
-// @access  Private
 export const updateFoodReview = async (req, res) => {
   try {
     const { rating, comment, mediaUrls } = req.body;
@@ -225,9 +207,6 @@ export const updateFoodReview = async (req, res) => {
   }
 };
 
-// @desc    Check if user can review
-// @route   GET /api/foods/:id/can-review
-// @access  Private
 export const checkCanReview = async (req, res) => {
   try {
     const completedOrders = await Order.countDocuments({
@@ -235,7 +214,7 @@ export const checkCanReview = async (req, res) => {
       orderStatus: 'completed',
       'items.food': req.params.id
     });
-    
+
     if (completedOrders === 0) {
       return res.json({ canReview: false, message: 'Bạn cần đặt mua và hoàn thành đơn hàng mới có thể đánh giá món ăn này.' });
     }
@@ -255,9 +234,6 @@ export const checkCanReview = async (req, res) => {
   }
 };
 
-// @desc    Get food reviews
-// @route   GET /api/foods/:id/reviews
-// @access  Public
 export const getFoodReviews = async (req, res) => {
   try {
     const reviews = await Review.find({ food: req.params.id })
@@ -269,9 +245,6 @@ export const getFoodReviews = async (req, res) => {
   }
 };
 
-// @desc    Admin reply to review
-// @route   PUT /api/foods/:id/reviews/:reviewId/reply
-// @access  Private/Admin
 export const replyFoodReview = async (req, res) => {
   try {
     const { reply } = req.body;
@@ -284,7 +257,7 @@ export const replyFoodReview = async (req, res) => {
 
       review.adminReply = reply;
       const updatedReview = await review.save();
-      
+
       const io = req.app.get('io');
       if (io) io.emit('reviewReplied', updatedReview);
 
@@ -297,11 +270,6 @@ export const replyFoodReview = async (req, res) => {
   }
 };
 
-// --- ADMIN ROUTES ---
-
-// @desc    Create a food
-// @route   POST /api/foods
-// @access  Private/Admin
 export const createFood = async (req, res) => {
   try {
     const {
@@ -361,9 +329,6 @@ export const createFood = async (req, res) => {
   }
 };
 
-// @desc    Update a food
-// @route   PUT /api/foods/:id
-// @access  Private/Admin
 export const updateFood = async (req, res) => {
   try {
     const {
@@ -415,9 +380,6 @@ export const updateFood = async (req, res) => {
   }
 };
 
-// @desc    Delete a food
-// @route   DELETE /api/foods/:id
-// @access  Private/Admin
 export const deleteFood = async (req, res) => {
   try {
     const food = await Food.findById(req.params.id);
@@ -434,3 +396,4 @@ export const deleteFood = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

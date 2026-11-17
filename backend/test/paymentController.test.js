@@ -34,3 +34,4 @@ test('payment confirmation keeps an order status that already progressed', async
   assert.equal(updatedOrder.paymentStatus, 'paid');
   assert.equal(updatedOrder.orderStatus, 'shipping');
 });
+

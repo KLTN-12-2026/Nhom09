@@ -6,9 +6,6 @@ import sendOrderConfirmationEmail from '../utils/sendEmail.js';
 const allowedPaymentMethods = new Set(['COD', 'BANK', 'MOMO', 'VNPAY']);
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// @desc    Create new order
-// @route   POST /api/orders
-// @access  Private
 export const addOrderItems = async (req, res) => {
   try {
     const { items, shippingAddress, phone, paymentMethod, totalAmount, note, email } = req.body;
@@ -72,11 +69,11 @@ export const addOrderItems = async (req, res) => {
     }
 
     const calculatedTotal = normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    
+
     let discount = 0;
     if (req.user.tier === 'Kim Cương') discount = 0.1;
     else if (req.user.tier === 'Vàng') discount = 0.05;
-    
+
     const expectedTotal = calculatedTotal * (1 - discount);
     const submittedTotal = Number(totalAmount);
 
@@ -103,21 +100,19 @@ export const addOrderItems = async (req, res) => {
       await createdOrder.populate('user', 'id name');
       io.emit('newOrder', createdOrder);
     }
-    
-    // Gửi email xác nhận ở chế độ nền (background) để không bao giờ làm nghẽn hoặc timeout phản hồi đặt hàng
+
     sendOrderConfirmationEmail(createdOrder, recipientEmail).catch((err) =>
       console.warn('Gửi email xác nhận nền gặp lỗi:', err?.message || err)
     );
 
-    // Cập nhật soldCount và trừ stock cho từng món ăn (atomic: chỉ trừ khi còn đủ hàng)
     const stockAndSoldUpdates = normalizedItems.map((item) => ({
       updateOne: {
         filter: {
           _id: item.food,
-          // Atomic guard: chỉ thực hiện khi stock còn đủ (tránh race condition multi-user)
+
           $or: [
             { stock: { $gte: item.quantity } },
-            { stock: null }, // Nếu chưa set stock thì bỏ qua constraint
+            { stock: null },
           ],
         },
         update: {
@@ -140,9 +135,6 @@ export const addOrderItems = async (req, res) => {
   }
 };
 
-// @desc    Get logged in user orders
-// @route   GET /api/orders/my-orders
-// @access  Private
 export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
@@ -152,9 +144,6 @@ export const getMyOrders = async (req, res) => {
   }
 };
 
-// @desc    Get order by ID
-// @route   GET /api/orders/:id
-// @access  Private
 export const getOrderById = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -176,9 +165,6 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-// @desc    Cancel order (User)
-// @route   PUT /api/orders/:id/cancel
-// @access  Private
 export const cancelOrder = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -202,7 +188,6 @@ export const cancelOrder = async (req, res) => {
       order.orderStatus = 'cancelled';
       const updatedOrder = await order.save();
 
-      // Hoàn lại số lượng tồn kho và giảm soldCount
       if (Array.isArray(order.items) && order.items.length > 0) {
         const restoreUpdates = order.items.map((item) => ({
           updateOne: {
@@ -228,3 +213,4 @@ export const cancelOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

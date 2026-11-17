@@ -1,4 +1,4 @@
-// FoodCare AI Backend Server
+
 import dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
@@ -34,12 +34,11 @@ const io = new Server(server, {
 app.set('io', io);
 
 app.use(cors());
-// Nén gzip/brotli cho tất cả responses – giảm ~70% kích thước JSON
+
 app.use(compression({ level: 6, threshold: 1024 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('dev'));
 
-// Upload folder – cache 7 ngày cho ảnh tĩnh
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   maxAge: '7d',
@@ -47,7 +46,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   lastModified: true,
 }));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/foods', foodRoutes);
@@ -70,13 +68,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Middleware
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-// Phòng ngừa server bị crash do các unhandled rejection ngoài ý muốn (vd từ AI SDK, Nodemailer)
 process.on('unhandledRejection', (reason, promise) => {
   console.error('[Unhandled Rejection at]:', promise, 'reason:', reason);
 });

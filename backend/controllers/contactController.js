@@ -29,3 +29,4 @@ export const submitContact = async (req, res) => {
     return res.status(500).json({ message: 'Chưa thể gửi tin nhắn. Vui lòng thử lại sau.' });
   }
 };
+

@@ -34,3 +34,4 @@ router.route('/notifications/:id/read')
   .put(protect, admin, markNotificationAsRead);
 
 export default router;
+

@@ -41,11 +41,11 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div 
+      <div
         className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-emerald-100 max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+
         <div className="relative bg-gradient-to-r from-emerald-600 via-teal-600 to-[#16845B] text-white px-6 py-4 flex items-center justify-between shadow-md">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
@@ -65,18 +65,16 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
           </button>
         </div>
 
-        {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
-          {/* Thông báo quét mã */}
+
           <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200/70 text-emerald-900 text-xs">
             <ShieldCheck size={18} className="text-emerald-600 shrink-0 mt-0.5" />
             <p>
-              Mở ứng dụng <strong>Ngân hàng</strong> hoặc <strong>Ví điện tử</strong> bất kỳ để quét mã. 
+              Mở ứng dụng <strong>Ngân hàng</strong> hoặc <strong>Ví điện tử</strong> bất kỳ để quét mã.
               Số tiền <strong>{amount.toLocaleString('vi-VN')} đ</strong> và nội dung đã được hệ thống điền tự động.
             </p>
           </div>
 
-          {/* QR Code Container */}
           <div className="flex flex-col items-center justify-center bg-gray-50/80 rounded-2xl p-4 border border-gray-100 shadow-inner">
             <div className="relative group bg-white p-3 rounded-2xl shadow-md border border-gray-200">
               <img
@@ -94,21 +92,18 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
             </button>
           </div>
 
-          {/* Bảng chi tiết thông tin chuyển khoản */}
           <div className="space-y-2 text-xs">
-            {/* Ngân hàng */}
+
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-150">
               <span className="text-gray-500 font-medium">Ngân hàng thụ hưởng:</span>
               <span className="font-bold text-dark text-right">{BANK_CONFIG.bankName}</span>
             </div>
 
-            {/* Chủ tài khoản */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 border border-gray-150">
               <span className="text-gray-500 font-medium">Chủ tài khoản:</span>
               <span className="font-bold text-emerald-800 tracking-wide text-right">{BANK_CONFIG.accountName}</span>
             </div>
 
-            {/* Số tài khoản */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-150">
               <span className="text-gray-600 font-medium">Số tài khoản:</span>
               <div className="flex items-center gap-2">
@@ -126,7 +121,6 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
               </div>
             </div>
 
-            {/* Số tiền */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-150">
               <span className="text-gray-600 font-medium">Số tiền thanh toán:</span>
               <div className="flex items-center gap-2">
@@ -144,7 +138,6 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
               </div>
             </div>
 
-            {/* Nội dung chuyển khoản */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
               <div>
                 <span className="text-gray-600 font-medium block">Nội dung chuyển khoản:</span>
@@ -166,7 +159,6 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
             </div>
           </div>
 
-          {/* Lưu ý kiểm tra nhân viên */}
           <div className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px] leading-relaxed">
             <AlertCircle size={15} className="text-blue-600 shrink-0 mt-0.5" />
             <p>
@@ -175,7 +167,6 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
           </div>
         </div>
 
-        {/* Footer Actions */}
         <div className="p-4 sm:p-5 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row gap-2.5 justify-end">
           <button
             type="button"
@@ -198,3 +189,4 @@ const VietQrModal = ({ isOpen, onClose, order, onComplete }) => {
 };
 
 export default VietQrModal;
+

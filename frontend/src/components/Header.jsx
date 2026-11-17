@@ -28,7 +28,6 @@ const Header = () => {
     navigate('/');
   }, [logout, navigate]);
 
-  // Throttle scroll với requestAnimationFrame – tránh reflow liên tục
   useEffect(() => {
     const onScroll = () => {
       if (rafRef.current) return;
@@ -37,7 +36,7 @@ const Header = () => {
         rafRef.current = null;
       });
     };
-    // passive: true – cho phép browser scroll tự do mà không chờ JS
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
@@ -45,7 +44,6 @@ const Header = () => {
     };
   }, []);
 
-  // Đóng mobile menu khi chuyển trang
   const [prevPath, setPrevPath] = useState(location.pathname);
   if (prevPath !== location.pathname) {
     setPrevPath(location.pathname);
@@ -173,7 +171,6 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile menu toggle */}
         <button
           className="text-dark md:hidden"
           onClick={() => setIsMobileMenuOpen((v) => !v)}
@@ -184,7 +181,6 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile menu – animation slide down */}
       <div
         className={`absolute left-0 top-full w-full flex-col gap-2 bg-white p-5 shadow-lg md:hidden overflow-hidden transition-all duration-200 ${
           isMobileMenuOpen ? 'flex max-h-screen opacity-100' : 'hidden max-h-0 opacity-0'
@@ -261,3 +257,4 @@ const Header = () => {
 };
 
 export default memo(Header);
+

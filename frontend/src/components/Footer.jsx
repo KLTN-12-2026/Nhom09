@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-dark text-gray-300 pt-16 pb-8 border-t-4 border-primary">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
+
           <div>
             <Link to="/" className="flex items-center gap-4 mb-6 -mt-2 md:-mt-4">
               <img src="/logo.png" alt="FoodCare Icon" className="h-16 md:h-24 w-auto object-contain" />
@@ -22,7 +22,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="text-white font-bold text-lg mb-6">Liên kết nhanh</h4>
             <ul className="space-y-3">
@@ -33,7 +32,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Categories */}
           <div>
             <h4 className="text-white font-bold text-lg mb-6">Danh mục Healthy</h4>
             <ul className="space-y-3">
@@ -44,7 +42,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="text-white font-bold text-lg mb-6">Liên hệ</h4>
             <ul className="space-y-4">
@@ -77,3 +74,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

@@ -50,7 +50,7 @@ const cartReducer = (state, action) => {
     case 'CLEAR_CART':
       return { ...state, cartItems: [] };
     case 'REORDER': {
-      // Thay thế giỏ hàng bằng các item từ đơn hàng cũ
+
       const newItems = action.payload.map((item) => ({
         food: item.food?.toString?.() || item.food,
         name: item.name,
@@ -77,12 +77,10 @@ export const CartProvider = ({ children }) => {
     warnings: [],
   });
 
-  // Lưu giỏ hàng vào localStorage khi thay đổi
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
   }, [state.cartItems]);
 
-  // Chỉ xóa giỏ hàng khi user thực sự đăng xuất (từ đã đăng nhập thành null)
   const prevUserRef = useRef(user);
   useEffect(() => {
     if (prevUserRef.current && !user) {
@@ -107,7 +105,6 @@ export const CartProvider = ({ children }) => {
       return;
     }
 
-    // Kiểm tra cảnh báo dị ứng & bệnh lý của người dùng nếu chưa xác nhận bỏ qua
     if (!bypassWarning && user?.healthProfile) {
       const { hasConflict, warnings } = checkFoodHealthConflict(item, user.healthProfile);
       if (hasConflict) {
@@ -155,7 +152,6 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: 'CLEAR_CART' });
   };
 
-  // Mua lại toàn bộ đơn hàng cũ (replace giỏ hàng hiện tại)
   const reorder = (orderItems) => {
     dispatch({ type: 'REORDER', payload: orderItems });
     toast.success(`Đã thêm ${orderItems.length} món vào giỏ hàng!`, {
@@ -180,6 +176,5 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => useContext(CartContext);
 

@@ -12,16 +12,12 @@ export const ORDER_STATUSES = [
   'cancelled',
 ];
 
-// @desc    Get dashboard stats
-// @route   GET /api/admin/dashboard
-// @access  Private/Admin
 export const getDashboardStats = async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments();
     const totalUsers = await User.countDocuments();
     const totalFoods = await Food.countDocuments();
-    
-    // Revenue only includes payments that were actually confirmed.
+
     const orders = await Order.find({
       paymentStatus: 'paid',
       orderStatus: { $ne: 'cancelled' },
@@ -45,9 +41,6 @@ export const getDashboardStats = async (req, res) => {
   }
 };
 
-// @desc    Get all orders
-// @route   GET /api/admin/orders
-// @access  Private/Admin
 export const getAdminOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate('user', 'id name').sort({ createdAt: -1 });
@@ -57,9 +50,6 @@ export const getAdminOrders = async (req, res) => {
   }
 };
 
-// @desc    Update order status
-// @route   PUT /api/admin/orders/:id/status
-// @access  Private/Admin
 export const updateOrderStatus = async (req, res) => {
   try {
     if (!ORDER_STATUSES.includes(req.body.status)) {
@@ -75,12 +65,11 @@ export const updateOrderStatus = async (req, res) => {
 
       const oldStatus = order.orderStatus;
       order.orderStatus = req.body.status;
-      
+
       if (req.body.status === 'completed' && oldStatus !== 'completed') {
         const wasAlreadyPaid = order.paymentStatus === 'paid';
         order.paymentStatus = 'paid';
 
-        // Chỉ cộng totalSpent nếu đơn chưa được tính trước đó (COD chưa paid)
         if (!wasAlreadyPaid) {
           const user = await User.findById(order.user);
           if (user) {
@@ -96,7 +85,7 @@ export const updateOrderStatus = async (req, res) => {
           }
         }
       } else if (oldStatus === 'completed' && req.body.status && req.body.status !== 'completed') {
-        // Giảm trừ tổng chi tiêu nếu hủy bỏ trạng thái completed (chỉ trừ nếu paymentStatus đang là paid do completed tạo ra)
+
         const user = await User.findById(order.user);
         if (user) {
           user.totalSpent = Math.max(0, (user.totalSpent || 0) - order.totalAmount);
@@ -110,9 +99,9 @@ export const updateOrderStatus = async (req, res) => {
           await user.save();
         }
       }
-      
+
       const updatedOrder = await order.save();
-      
+
       const io = req.app.get('io');
       if (io) io.emit('orderUpdated', updatedOrder);
 
@@ -125,9 +114,6 @@ export const updateOrderStatus = async (req, res) => {
   }
 };
 
-// @desc    Update order payment status (Admin check bank payment)
-// @route   PUT /api/admin/orders/:id/payment-status
-// @access  Private/Admin
 export const updateOrderPaymentStatus = async (req, res) => {
   try {
     const { paymentStatus } = req.body;
@@ -145,7 +131,7 @@ export const updateOrderPaymentStatus = async (req, res) => {
     }
 
     order.paymentStatus = paymentStatus;
-    // Nếu nhân viên check xác nhận đã nhận tiền thì tự động chuyển pending sang confirmed
+
     if (paymentStatus === 'paid' && order.orderStatus === 'pending') {
       order.orderStatus = 'confirmed';
     }
@@ -161,10 +147,6 @@ export const updateOrderPaymentStatus = async (req, res) => {
   }
 };
 
-
-// @desc    Get all users (customers)
-// @route   GET /api/admin/users
-// @access  Private/Admin
 export const getAdminUsers = async (req, res) => {
   try {
     const users = await User.find({ email: { $ne: 'thanhtinnguyen870@gmail.com' } })
@@ -176,9 +158,6 @@ export const getAdminUsers = async (req, res) => {
   }
 };
 
-// @desc    Block or unblock a customer account
-// @route   PUT /api/admin/users/:id/block
-// @access  Private/Admin
 export const updateUserBlockStatus = async (req, res) => {
   try {
     if (typeof req.body.isBlocked !== 'boolean') {
@@ -212,9 +191,6 @@ export const updateUserBlockStatus = async (req, res) => {
   }
 };
 
-// @desc    Update user info (name, phone, address) by admin
-// @route   PUT /api/admin/users/:id
-// @access  Private/Admin
 export const updateUserInfo = async (req, res) => {
   try {
     const { name, phone, address } = req.body;
@@ -236,14 +212,12 @@ export const updateUserInfo = async (req, res) => {
       return res.status(400).json({ message: 'Không thể chỉnh sửa tài khoản quản trị viên.' });
     }
 
-    // 7. Lưu thay đổi vào cơ sở dữ liệu
     user.name = String(name).trim();
     if (phone !== undefined) user.phone = String(phone).trim();
     if (address !== undefined) user.address = String(address).trim();
 
     const updatedUser = await user.save();
 
-    // 8. Thông báo cập nhật thành công
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,
@@ -261,9 +235,6 @@ export const updateUserInfo = async (req, res) => {
   }
 };
 
-// @desc    Get all foods for admin, including unavailable items
-// @route   GET /api/admin/foods
-// @access  Private/Admin
 export const getAdminFoods = async (req, res) => {
   try {
     const foods = await Food.find({}).populate('category', 'name slug').sort({ createdAt: -1 });
@@ -273,9 +244,6 @@ export const getAdminFoods = async (req, res) => {
   }
 };
 
-// @desc    Get all notifications for admin
-// @route   GET /api/admin/notifications
-// @access  Private/Admin
 export const getNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ type: 'REVIEW' }).populate('user', 'name').sort({ createdAt: -1 });
@@ -285,16 +253,13 @@ export const getNotifications = async (req, res) => {
   }
 };
 
-// @desc    Mark a notification as read
-// @route   PUT /api/admin/notifications/:id/read
-// @access  Private/Admin
 export const markNotificationAsRead = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
     if (notification) {
       notification.isRead = true;
       const updatedNotification = await notification.save();
-      
+
       const io = req.app.get('io');
       if (io) io.emit('notificationRead', updatedNotification._id);
 
@@ -307,9 +272,6 @@ export const markNotificationAsRead = async (req, res) => {
   }
 };
 
-// @desc    Delete a notification
-// @route   DELETE /api/admin/notifications/:id
-// @access  Private/Admin
 export const deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -324,9 +286,6 @@ export const deleteNotification = async (req, res) => {
   }
 };
 
-// @desc    Delete all notifications
-// @route   DELETE /api/admin/notifications
-// @access  Private/Admin
 export const clearAllNotifications = async (req, res) => {
   try {
     const result = await Notification.deleteMany({});
@@ -335,3 +294,4 @@ export const clearAllNotifications = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

@@ -1,7 +1,3 @@
-/**
- * Module tính toán chỉ số dinh dưỡng & thẩm định an toàn thực phẩm
- * Dựa trên các tiêu chuẩn y khoa quốc tế (Mifflin-St Jeor, WHO Asia-Pacific)
- */
 
 export const ACTIVITY_LEVELS = [
   { value: 'sedentary', label: 'Ít vận động (Dân văn phòng, ít tập thể dục)', multiplier: 1.2 },
@@ -29,10 +25,6 @@ export const COMMON_ALLERGIES = [
   'Thịt bò',
 ];
 
-/**
- * Tính toán BMR (Basal Metabolic Rate - Năng lượng trao đổi chất cơ bản)
- * Công thức Mifflin-St Jeor
- */
 export const calculateBMR = ({ weight, height, age, gender }) => {
   const w = parseFloat(weight);
   const h = parseFloat(height);
@@ -41,27 +33,20 @@ export const calculateBMR = ({ weight, height, age, gender }) => {
   if (!w || !h || !a) return null;
 
   const isMale = gender === 'male' || gender === 'Nam';
-  // Nam: BMR = 10W + 6.25H - 5A + 5
-  // Nữ: BMR = 10W + 6.25H - 5A - 161
+
   const base = 10 * w + 6.25 * h - 5 * a;
   return Math.round(isMale ? base + 5 : base - 161);
 };
 
-/**
- * Tính TDEE (Total Daily Energy Expenditure)
- */
 export const calculateTDEE = (bmr, activityLevel = 'sedentary') => {
   if (!bmr) return null;
   const level = ACTIVITY_LEVELS.find((item) => item.value === activityLevel) || ACTIVITY_LEVELS[0];
   return Math.round(bmr * level.multiplier);
 };
 
-/**
- * Tính chỉ số BMI và phân loại thể trạng theo chuẩn WHO châu Á
- */
 export const calculateBMI = (weight, height) => {
   const w = parseFloat(weight);
-  const h = parseFloat(height) / 100; // cm -> m
+  const h = parseFloat(height) / 100;
   if (!w || !h || h <= 0) return null;
 
   const bmi = parseFloat((w / (h * h)).toFixed(1));
@@ -85,9 +70,6 @@ export const calculateBMI = (weight, height) => {
   return { bmi, category, color };
 };
 
-/**
- * Tính toán phân bổ dinh dưỡng đa lượng (Macronutrients) mục tiêu hàng ngày
- */
 export const calculateMacroGoals = (profile) => {
   if (!profile?.weight || !profile?.height || !profile?.age) return null;
 
@@ -100,16 +82,13 @@ export const calculateMacroGoals = (profile) => {
   const goalObj = GOALS.find((g) => g.value === profile.goal) || GOALS[0];
   const targetCalories = Math.max(1200, tdee + goalObj.caloOffset);
 
-  // 1g Protein = 4 kcal, 1g Fat = 9 kcal, 1g Carbs = 4 kcal
   const weight = parseFloat(profile.weight);
   const targetProteinGrams = Math.round(weight * goalObj.proteinPerKg);
   const proteinCalories = targetProteinGrams * 4;
 
-  // Chất béo chiếm ~25% tổng năng lượng
   const fatCalories = Math.round(targetCalories * 0.25);
   const targetFatGrams = Math.round(fatCalories / 9);
 
-  // Tinh bột chiếm phần calo còn lại
   const carbCalories = Math.max(0, targetCalories - proteinCalories - fatCalories);
   const targetCarbGrams = Math.round(carbCalories / 4);
 
@@ -128,15 +107,11 @@ export const calculateMacroGoals = (profile) => {
   };
 };
 
-/**
- * Kiểm tra món ăn có xung đột với Dị ứng hoặc Bệnh lý của người dùng hay không
- */
 export const checkFoodHealthConflict = (food, healthProfile) => {
   if (!food || !healthProfile) return { hasConflict: false, warnings: [] };
 
   const warnings = [];
 
-  // 1. Kiểm tra dị ứng thực phẩm
   const userAllergies = Array.isArray(healthProfile.allergies)
     ? healthProfile.allergies
     : typeof healthProfile.allergies === 'string'
@@ -147,7 +122,6 @@ export const checkFoodHealthConflict = (food, healthProfile) => {
   const foodWarningFor = Array.isArray(food.warningFor) ? food.warningFor : [];
   const foodName = food.name || '';
 
-  // Danh mục từ khóa dị ứng phổ biến
   const allergyKeywordsMap = {
     'hải sản': ['tôm', 'cua', 'mực', 'ghẹ', 'nghêu', 'sò', 'hàu', 'ốc', 'seafood'],
     'đậu phộng': ['đậu phộng', 'lạc', 'peanut'],
@@ -161,8 +135,7 @@ export const checkFoodHealthConflict = (food, healthProfile) => {
 
   userAllergies.forEach((allergy) => {
     const allergyLower = allergy.toLowerCase();
-    
-    // Tìm các từ khóa con liên quan
+
     let matchedKeywords = [allergyLower];
     Object.entries(allergyKeywordsMap).forEach(([key, list]) => {
       if (allergyLower.includes(key)) {
@@ -185,7 +158,6 @@ export const checkFoodHealthConflict = (food, healthProfile) => {
     }
   });
 
-  // 2. Kiểm tra bệnh lý / cảnh báo sức khỏe (warningFor)
   const userConditions = Array.isArray(healthProfile.conditions)
     ? healthProfile.conditions
     : typeof healthProfile.conditions === 'string'
@@ -214,3 +186,4 @@ export const checkFoodHealthConflict = (food, healthProfile) => {
     warnings,
   };
 };
+

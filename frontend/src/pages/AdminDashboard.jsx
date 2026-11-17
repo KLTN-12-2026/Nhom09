@@ -142,13 +142,11 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const avatarInputRef = useRef(null);
 
-  // Layout & navigation state
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [overviewTimeRange, setOverviewTimeRange] = useState('today');
 
-  // Core data states
   const [stats, setStats] = useState(null);
   const [orders, setOrders] = useState([]);
   const [foods, setFoods] = useState([]);
@@ -158,7 +156,6 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Search & filter states
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [orderPaymentStatusFilter, setOrderPaymentStatusFilter] = useState('all');
@@ -169,7 +166,6 @@ const AdminDashboard = () => {
   const [customerNameFilter, setCustomerNameFilter] = useState('');
   const [notificationFilter, setNotificationFilter] = useState('all');
 
-  // Modal states
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [editingFood, setEditingFood] = useState(null);
   const [foodForm, setFoodForm] = useState(emptyFoodForm);
@@ -178,7 +174,6 @@ const AdminDashboard = () => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
 
-  // Revenue filter states (NO CHARTS - TABLE & KPIS ONLY)
   const now = new Date();
   const currentLocalYear = now.getFullYear().toString();
   const currentLocalMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -189,7 +184,6 @@ const AdminDashboard = () => {
   const [revenueFilterMonth, setRevenueFilterMonth] = useState(`${currentLocalYear}-${currentLocalMonth}`);
   const [revenueFilterYear, setRevenueFilterYear] = useState(currentLocalYear);
 
-  // AI Logs states & handlers
   const [aiLogs, setAiLogs] = useState([]);
   const [aiLogsLoading, setAiLogsLoading] = useState(false);
   const [aiTopicFilter, setAiTopicFilter] = useState('all');
@@ -264,7 +258,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Profile & user management states
   const [adminProfileForm, setAdminProfileForm] = useState({ name: user?.name || '' });
   const [adminPasswordForm, setAdminPasswordForm] = useState({
     currentPassword: '',
@@ -283,7 +276,6 @@ const AdminDashboard = () => {
     return () => clearTimeout(syncProfileForm);
   }, [user?.name]);
 
-  // Fetch all admin data
   const fetchAdminData = useCallback(async () => {
     setLoading(true);
     try {
@@ -317,7 +309,6 @@ const AdminDashboard = () => {
     return () => clearTimeout(loadTimer);
   }, [user, fetchAdminData]);
 
-  // Socket.IO real-time sync
   useEffect(() => {
     if (!user || user.role !== 'admin') return;
 
@@ -429,7 +420,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Operational metrics
   const revenueToday = useMemo(() => {
     const today = new Date().toDateString();
     return orders
@@ -487,7 +477,6 @@ const AdminDashboard = () => {
     return { activeOrders, shippingOrders, hiddenFoods, averageOrder, paidOrders };
   }, [foods, orders, stats]);
 
-  // Revenue grouped calculation (for high-contrast data table breakdown)
   const revenueStats = useMemo(() => {
     const groups = {};
     orders
@@ -524,7 +513,6 @@ const AdminDashboard = () => {
     return Object.values(groups).sort((a, b) => b.sortKey.localeCompare(a.sortKey));
   }, [orders, revenueFilterType, revenueFilterDate, revenueFilterMonth, revenueFilterYear]);
 
-  // Detailed list of paid orders in the selected period
   const periodPaidOrders = useMemo(() => {
     return orders
       .filter((o) => o.paymentStatus === 'paid' && o.orderStatus !== 'cancelled')
@@ -543,7 +531,6 @@ const AdminDashboard = () => {
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [orders, revenueFilterType, revenueFilterDate, revenueFilterMonth, revenueFilterYear]);
 
-  // Top selling foods
   const topSellingFoods = useMemo(() => {
     const counts = {};
     orders.forEach((order) => {
@@ -563,19 +550,16 @@ const AdminDashboard = () => {
       .slice(0, 5);
   }, [foods, orders]);
 
-  // Filtered orders (Hỗ trợ tìm kiếm thông minh: mã đơn có/không #, tên món, SĐT, email, và lọc thanh toán)
   const filteredOrders = useMemo(() => {
     const rawTerm = orderSearchTerm.trim().toLowerCase();
     const cleanTerm = rawTerm.replace(/^#/, '').trim();
 
     return orders.filter((order) => {
-      // 1. Lọc theo trạng thái đơn hàng (statusFilter)
+
       if (statusFilter !== 'all' && order.orderStatus !== statusFilter) return false;
 
-      // 2. Lọc theo trạng thái thanh toán (orderPaymentStatusFilter)
       if (orderPaymentStatusFilter !== 'all' && order.paymentStatus !== orderPaymentStatusFilter) return false;
 
-      // 3. Lọc theo phương thức thanh toán (orderPaymentMethodFilter)
       if (orderPaymentMethodFilter !== 'all' && order.paymentMethod !== orderPaymentMethodFilter) return false;
 
       if (!cleanTerm) return true;
@@ -613,7 +597,6 @@ const AdminDashboard = () => {
     });
   }, [orders, orderSearchTerm, statusFilter, orderPaymentStatusFilter, orderPaymentMethodFilter]);
 
-  // Order counts per status
   const orderStatusCounts = useMemo(() => {
     const counts = { all: orders.length, pending: 0, confirmed: 0, preparing: 0, shipping: 0, completed: 0, cancelled: 0 };
     orders.forEach((o) => {
@@ -622,7 +605,6 @@ const AdminDashboard = () => {
     return counts;
   }, [orders]);
 
-  // Filtered foods
   const filteredFoods = useMemo(() => {
     const term = foodSearchTerm.toLowerCase().trim();
     return foods.filter((food) => {
@@ -638,7 +620,6 @@ const AdminDashboard = () => {
     });
   }, [foods, foodSearchTerm, selectedCategory, availabilityFilter]);
 
-  // Category summaries
   const categorySummaries = useMemo(() => {
     const uncategorized = { _id: 'uncategorized', name: 'Chưa phân loại', count: 0, active: 0, hidden: 0 };
     const summaries = categories.map((category) => ({
@@ -674,7 +655,6 @@ const AdminDashboard = () => {
     ];
   }, [categories, foods]);
 
-  // Filtered users
   const filteredUsers = useMemo(() => {
     const nameTerm = customerNameFilter.toLowerCase().trim();
     return users.filter((item) => {
@@ -685,7 +665,6 @@ const AdminDashboard = () => {
     });
   }, [users, customerNameFilter]);
 
-  // Modal open/close helpers
   const openFoodForm = (food = null) => {
     setEditingFood(food || {});
     setFoodForm(
@@ -716,7 +695,6 @@ const AdminDashboard = () => {
     setFoodForm(emptyFoodForm);
   };
 
-  // Client-side image compression
   const compressImageClient = (file, { maxWidth = 1000, quality = 0.82 } = {}) =>
     new Promise((resolve) => {
       const img = new Image();
@@ -1003,7 +981,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Full-screen loading skeleton
   if (loading && !stats) {
     return (
       <div className="min-h-screen bg-[#F7F9F6] flex flex-col items-center justify-center p-6 text-[#17231D]">
@@ -1018,7 +995,6 @@ const AdminDashboard = () => {
     );
   }
 
-  // Admin access guard
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F7F9F6] p-6 text-[#17231D]">
@@ -1051,7 +1027,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F9F6] text-[#17231D] font-sans antialiased flex">
-      {/* ── MOBILE SIDEBAR BACKDROP ── */}
+
       {mobileSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
@@ -1059,13 +1035,12 @@ const AdminDashboard = () => {
         />
       )}
 
-      {/* ── SIDEBAR ── */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white border-r border-[#E8EEE9] transition-all duration-300 ease-in-out lg:static ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         } ${sidebarCollapsed ? 'w-[76px]' : 'w-[264px]'}`}
       >
-        {/* Brand Header */}
+
         <div className="flex h-16 items-center justify-between px-4 border-b border-[#E8EEE9]">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <img
@@ -1103,7 +1078,6 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        {/* Navigation items */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           <div className={`px-2 mb-2 text-[10px] font-bold uppercase tracking-wider text-[#758278] ${sidebarCollapsed ? 'hidden' : 'block'}`}>
             Quản trị chính
@@ -1131,7 +1105,6 @@ const AdminDashboard = () => {
                 />
                 {!sidebarCollapsed && <span className="truncate">{tab.label}</span>}
 
-                {/* Badge counters */}
                 {tab.id === 'orders' && pendingOrdersCount > 0 && (
                   <span
                     className={`flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white shadow-xs ${
@@ -1189,7 +1162,6 @@ const AdminDashboard = () => {
           })}
         </div>
 
-        {/* Sidebar Footer: Admin Profile */}
         <div className="p-3 border-t border-[#E8EEE9]">
           <div
             className={`flex items-center gap-3 p-2 rounded-xl bg-[#F7F9F6] border border-[#E8EEE9]/60 ${
@@ -1222,9 +1194,8 @@ const AdminDashboard = () => {
         </div>
       </aside>
 
-      {/* ── MAIN CONTENT CONTAINER ── */}
       <div className="flex-1 min-w-0 flex flex-col min-h-screen">
-        {/* Top Header */}
+
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#E8EEE9] bg-white/95 backdrop-blur-md px-4 sm:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -1234,7 +1205,6 @@ const AdminDashboard = () => {
               <Menu size={18} />
             </button>
 
-            {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-xs font-medium text-[#758278]">
               <span className="hidden sm:inline">Hệ thống</span>
               <span className="hidden sm:inline">/</span>
@@ -1244,9 +1214,8 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Right Header Actions */}
           <div className="flex items-center gap-3">
-            {/* Notification Bell */}
+
             <button
               onClick={() => setActiveTab('notifications')}
               className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[#E8EEE9] bg-white text-[#758278] hover:text-[#17231D] hover:bg-[#F7F9F6] transition-colors shadow-2xs"
@@ -1260,7 +1229,6 @@ const AdminDashboard = () => {
               )}
             </button>
 
-            {/* Admin Avatar Quick Action */}
             <button
               onClick={() => setActiveTab('profile')}
               className="flex items-center gap-2 pl-2 border-l border-[#E8EEE9]"
@@ -1276,14 +1244,11 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        {/* Tab Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl w-full mx-auto">
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 1: TỔNG QUAN (DASHBOARD TRỌNG TÂM - KHÔNG BIỂU ĐỒ)
-              ══════════════════════════════════════════════════════════════ */}
+
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* 5.1 Welcome Section */}
+
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-[#E8EEE9] bg-white p-5 sm:p-6 shadow-xs">
                 <div>
                   <div className="flex items-center gap-2">
@@ -1332,7 +1297,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* 5.2 KPI Cards (4 thẻ thống kê đồng bộ) */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <KpiCard
                   label="Tổng doanh thu"
@@ -1368,7 +1332,6 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              {/* 5.4 Operational Overview (Thay thế hoàn toàn biểu đồ) */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <OperationalTile
                   icon={Clock}
@@ -1417,9 +1380,8 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              {/* 5.3 Recent Orders & 5.6 Top Selling Foods (Grid Layout) */}
               <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-                {/* Đơn hàng mới nhất */}
+
                 <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs">
                   <div className="flex items-center justify-between border-b border-[#E8EEE9] px-6 py-4">
                     <div>
@@ -1480,7 +1442,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* Top món bán chạy nhất (Clean List - NO CHARTS) */}
                 <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs">
                   <div className="flex items-center justify-between border-b border-[#E8EEE9] px-6 py-4">
                     <div>
@@ -1536,12 +1497,9 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 2: QUẢN LÝ ĐƠN HÀNG
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'orders' && (
             <div className="space-y-5">
-              {/* Header & Mini Ribbon */}
+
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-[#17231D]">Quản lý đơn hàng</h1>
@@ -1549,7 +1507,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Status Filter Tabs / Chips */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
                 {[
                   { key: 'all', label: 'Tất cả đơn' },
@@ -1581,7 +1538,6 @@ const AdminDashboard = () => {
                 ))}
               </div>
 
-              {/* Search Bar & Order Table */}
               <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs overflow-hidden">
                 <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EEE9]">
                   <div className="relative flex-1 max-w-md">
@@ -1605,7 +1561,6 @@ const AdminDashboard = () => {
                     )}
                   </div>
 
-                  {/* Dropdowns lọc trạng thái & phương thức thanh toán */}
                   <div className="flex flex-wrap items-center gap-2">
                     <select
                       value={orderPaymentStatusFilter}
@@ -1649,7 +1604,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 </div>
-
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
@@ -1771,12 +1725,9 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 3: QUẢN LÝ THỰC ĐƠN
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'foods' && (
             <div className="space-y-5">
-              {/* Header & Main Actions */}
+
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-[#17231D]">Quản lý thực đơn</h1>
@@ -1798,7 +1749,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Category Pills Ribbon */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
                 {categorySummaries.map((cat) => (
                   <button
@@ -1822,7 +1772,6 @@ const AdminDashboard = () => {
                 ))}
               </div>
 
-              {/* Filters & Search */}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-[#E8EEE9] bg-white p-4 shadow-xs">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#758278]" size={16} />
@@ -1850,7 +1799,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Foods Grid */}
               {filteredFoods.length > 0 ? (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredFoods.map((food) => (
@@ -1859,7 +1807,7 @@ const AdminDashboard = () => {
                       className="group rounded-2xl border border-[#E8EEE9] bg-white p-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
                     >
                       <div>
-                        {/* Food Image Container */}
+
                         <div className="relative h-44 w-full overflow-hidden rounded-xl bg-slate-100 mb-3 border border-[#E8EEE9]/60">
                           <img
                             src={food.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop'}
@@ -1885,7 +1833,6 @@ const AdminDashboard = () => {
                           </span>
                         </div>
 
-                        {/* Title & Price */}
                         <div className="flex items-start justify-between gap-2 mb-1.5">
                           <h3 className="font-bold text-sm text-[#17231D] line-clamp-1">{food.name}</h3>
                           <span className="shrink-0 font-bold text-sm text-[#16845B]">{formatCurrency(food.price)}</span>
@@ -1895,7 +1842,6 @@ const AdminDashboard = () => {
                           {food.description || 'Chưa có thông tin mô tả chi tiết.'}
                         </p>
 
-                        {/* Nutritional Highlights */}
                         {food.nutrition && (
                           <div className="grid grid-cols-4 gap-1 rounded-xl bg-[#F7F9F6] p-2 text-center text-[10px] font-semibold text-[#758278] mb-4">
                             <div>
@@ -1918,7 +1864,6 @@ const AdminDashboard = () => {
                         )}
                       </div>
 
-                      {/* Action buttons */}
                       <div className="flex items-center gap-2 pt-3 border-t border-[#E8EEE9]">
                         <button
                           onClick={() => handleToggleAvailability(food)}
@@ -1958,9 +1903,6 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 4: QUẢN LÝ KHÁCH HÀNG
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'customers' && (
             <div className="space-y-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -2086,12 +2028,9 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 5: BÁO CÁO DOANH THU (KHÔNG BIỂU ĐỒ - BẢNG SỐ LIỆU CAO CẤP)
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'revenue' && (
             <div className="space-y-6">
-              {/* Header */}
+
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-[#17231D]">Báo cáo doanh thu</h1>
@@ -2099,7 +2038,7 @@ const AdminDashboard = () => {
                     Tổng hợp số liệu kinh doanh minh bạch theo ngày, tháng, năm (Không sử dụng biểu đồ)
                   </p>
                 </div>
-                {/* Period Controls */}
+
                 <div className="flex items-center gap-2 rounded-xl border border-[#E8EEE9] bg-white p-1 text-xs font-semibold shadow-2xs">
                   <select
                     value={revenueFilterType}
@@ -2177,7 +2116,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Revenue KPI Cards */}
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="rounded-2xl border border-[#E8EEE9] bg-white p-5 shadow-xs">
                   <div className="flex items-center justify-between mb-3">
@@ -2229,7 +2167,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Data Table: Breakdown by time period (NO CHARTS) */}
               <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs overflow-hidden">
                 <div className="border-b border-[#E8EEE9] px-6 py-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -2314,7 +2251,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Detailed Transactions Ledger */}
               <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs overflow-hidden">
                 <div className="border-b border-[#E8EEE9] px-6 py-4 flex items-center justify-between">
                   <div>
@@ -2386,9 +2322,6 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 6: THÔNG BÁO HỆ THỐNG
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'notifications' && (
             <div className="space-y-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -2493,12 +2426,9 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB: QUẢN LÝ NHẬT KÝ AI (DÀNH CHO ADMIN)
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'ai_logs' && (
             <div className="space-y-5">
-              {/* Header */}
+
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-[#17231D] flex items-center gap-2">
@@ -2526,7 +2456,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Filters & Search */}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-[#E8EEE9] bg-white p-4 shadow-xs">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#758278]" size={16} />
@@ -2560,7 +2489,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Table list */}
               <div className="rounded-2xl border border-[#E8EEE9] bg-white shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
@@ -2667,9 +2595,6 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════════════════════════
-              TAB 7: HỒ SƠ QUẢN TRỊ VIÊN
-              ══════════════════════════════════════════════════════════════ */}
           {activeTab === 'profile' && (
             <div className="space-y-6">
               <div>
@@ -2678,7 +2603,7 @@ const AdminDashboard = () => {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
-                {/* Profile Card & Avatar */}
+
                 <div className="rounded-2xl border border-[#E8EEE9] bg-white p-6 shadow-xs text-center flex flex-col items-center">
                   <div className="relative mb-4 h-28 w-28 overflow-hidden rounded-2xl border-2 border-[#16845B]/30 bg-slate-100 shadow-sm">
                     <img
@@ -2717,9 +2642,8 @@ const AdminDashboard = () => {
                   </button>
                 </div>
 
-                {/* Edit forms */}
                 <div className="space-y-6">
-                  {/* General Info */}
+
                   <div className="rounded-2xl border border-[#E8EEE9] bg-white p-6 shadow-xs">
                     <h3 className="font-bold text-base text-[#17231D] mb-4">Thông tin cơ bản</h3>
                     <form onSubmit={handleAdminProfileUpdate} className="space-y-4">
@@ -2751,7 +2675,6 @@ const AdminDashboard = () => {
                     </form>
                   </div>
 
-                  {/* Password Form */}
                   <div className="rounded-2xl border border-[#E8EEE9] bg-white p-6 shadow-xs">
                     <h3 className="font-bold text-base text-[#17231D] mb-4">Đổi mật khẩu</h3>
                     <form onSubmit={handleAdminPasswordChange} className="space-y-4">
@@ -2810,13 +2733,10 @@ const AdminDashboard = () => {
         </main>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════
-          MODAL: CHI TIẾT NHẬT KÝ CÂU HỎI AI
-          ══════════════════════════════════════════════════════════════ */}
       {selectedAILog && (
         <Modal title="Chi tiết câu hỏi & phản hồi AI" onClose={() => setSelectedAILog(null)}>
           <div className="space-y-5 text-xs">
-            {/* Header info */}
+
             <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#F7F9F6] border border-[#E8EEE9]">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-[#E8F5EE] text-[#16845B] font-bold flex items-center justify-center text-sm shrink-0 overflow-hidden">
@@ -2837,7 +2757,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Question */}
             <div className="p-4 rounded-xl border border-[#E8EEE9] bg-white">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#758278] block mb-1.5">
                 Câu hỏi của người dùng:
@@ -2854,7 +2773,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* AI Response */}
             <div className="p-4 rounded-xl border border-[#16845B]/20 bg-[#E8F5EE]/30">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#16845B] block mb-1.5 flex items-center gap-1.5">
                 <Bot size={14} /> Phản hồi từ trợ lý FoodCare AI:
@@ -2864,7 +2782,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Recommended Foods */}
             {selectedAILog.recommendedFoods?.length > 0 && (
               <div className="p-4 rounded-xl border border-[#E8EEE9] bg-white">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#758278] block mb-2.5">
@@ -2886,7 +2803,6 @@ const AdminDashboard = () => {
               </div>
             )}
 
-            {/* Action buttons */}
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8EEE9]">
               <button
                 type="button"
@@ -2907,13 +2823,10 @@ const AdminDashboard = () => {
         </Modal>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════
-          MODAL: CHI TIẾT ĐƠN HÀNG
-          ══════════════════════════════════════════════════════════════ */}
       {selectedOrder && (
         <Modal title={`Chi tiết đơn hàng #${selectedOrder._id?.slice(-8)?.toUpperCase()}`} onClose={() => setSelectedOrder(null)}>
           <div className="space-y-6">
-            {/* Status Stepper Preview */}
+
             <div className="rounded-xl bg-[#F7F9F6] p-4 border border-[#E8EEE9]">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-[#758278]">Trạng thái hiện tại:</span>
@@ -2939,7 +2852,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Customer & Shipping Details */}
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-[#E8EEE9] p-4 bg-white">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#758278] mb-2">Thông tin khách hàng</h4>
@@ -2954,7 +2866,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Ordered Items Table */}
             <div className="rounded-xl border border-[#E8EEE9] overflow-hidden">
               <div className="bg-[#F7F9F6] px-4 py-2.5 border-b border-[#E8EEE9] text-xs font-bold text-[#17231D]">
                 Danh sách món ăn ({selectedOrder.items?.length || 0})
@@ -2981,7 +2892,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Payment Check & Confirmation */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl bg-emerald-50/70 p-4 border border-emerald-200/80">
               <div>
                 <span className="text-xs font-bold text-emerald-950 block">
@@ -3006,7 +2916,6 @@ const AdminDashboard = () => {
               )}
             </div>
 
-            {/* Update status directly from modal */}
             {!['completed', 'cancelled'].includes(selectedOrder.orderStatus) && (
               <div className="flex items-center justify-between rounded-xl bg-amber-50/60 p-4 border border-amber-200/60">
                 <span className="text-xs font-semibold text-amber-900">Cập nhật nhanh trạng thái:</span>
@@ -3029,16 +2938,13 @@ const AdminDashboard = () => {
         </Modal>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════
-          MODAL: THÊM / CẬP NHẬT MÓN ĂN
-          ══════════════════════════════════════════════════════════════ */}
       {editingFood !== null && (
         <Modal
           title={editingFood?._id ? `Cập nhật món: ${editingFood.name}` : 'Thêm món ăn mới vào thực đơn'}
           onClose={closeFoodForm}
         >
           <form onSubmit={handleSaveFood} className="space-y-6">
-            {/* Basic Info */}
+
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#16845B]">1. Thông tin cơ bản</span>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -3103,7 +3009,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Image Upload */}
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#16845B]">2. Hình ảnh món ăn</span>
               <div className="flex gap-4 items-start">
@@ -3141,7 +3046,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Description & Ingredients */}
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#16845B]">3. Mô tả & Thành phần</span>
               <div>
@@ -3165,7 +3069,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Nutrition facts */}
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#16845B]">4. Thành phần dinh dưỡng</span>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -3216,7 +3119,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Health Tags */}
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#16845B]">5. Tags sức khỏe & Cảnh báo</span>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -3241,7 +3143,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex justify-end gap-3 pt-3 border-t border-[#E8EEE9]">
               <button
                 type="button"
@@ -3262,9 +3163,6 @@ const AdminDashboard = () => {
         </Modal>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════
-          MODAL: THÊM DANH MỤC
-          ══════════════════════════════════════════════════════════════ */}
       {isCategoryModalOpen && (
         <Modal title="Thêm danh mục thực đơn mới" onClose={() => setIsCategoryModalOpen(false)}>
           <form onSubmit={handleCreateCategory} className="space-y-4">
@@ -3308,9 +3206,6 @@ const AdminDashboard = () => {
         </Modal>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════
-          MODAL: CHỈNH SỬA THÔNG TIN KHÁCH HÀNG
-          ══════════════════════════════════════════════════════════════ */}
       {editingUser && (
         <Modal title={`Chỉnh sửa thông tin: ${editingUser.name}`} onClose={closeUserForm}>
           <div className="mb-4 grid gap-2.5 sm:grid-cols-2 rounded-xl bg-[#F7F9F6] p-3 text-xs border border-[#E8EEE9]">
@@ -3391,8 +3286,6 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
-// ── REUSABLE DESIGN SYSTEM ATOMS ──
 
 const KpiCard = ({ label, value, subtext, icon: Icon, badge, tone = 'green' }) => {
   const tones = {
@@ -3525,3 +3418,4 @@ const Modal = ({ title, onClose, children }) => (
 );
 
 export default AdminDashboard;
+

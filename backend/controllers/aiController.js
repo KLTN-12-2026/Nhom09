@@ -39,14 +39,12 @@ const buildMessages = (systemPrompt, conversationHistory = [], message) => {
   return messages;
 };
 
-// Cấu hình tối ưu độ sâu & chuẩn xác (Tổng thời gian tối đa đảm bảo trong vòng 15 giây)
 const GEMINI_CONFIG = {
   temperature: 0.25,
   top_p: 0.85,
   max_tokens: 3000,
 };
 
-// Groq hỗ trợ suy luận LPU siêu tốc
 const GROQ_CONFIG = {
   temperature: 0.25,
   top_p: 0.85,
@@ -55,20 +53,19 @@ const GROQ_CONFIG = {
   max_tokens: 1200,
 };
 
-// Hàm thẩm định chất lượng phản hồi AI (Loại trừ triệt để câu cụt, chữ "Dựa", "Theo", rác văn bản)
 const isValidAIResponse = (text, userMessage = '') => {
   if (!text || typeof text !== 'string') return false;
   const trimmed = text.trim();
-  // Quá ngắn (< 35 ký tự)
+
   if (trimmed.length < 35) {
     const isShortLegit = /^(xin chào|chào bạn|cảm ơn|không có gì|hẹn gặp lại)[.!]?$/i.test(trimmed);
     if (!isShortLegit) return false;
   }
-  // Bị đứt cụt lửng lơ ở cuối câu
+
   if (/(?:\(|,|\/|-|\b(với|và|của|là|được|cho|sức|rất|hỗ trợ|quá trình|trong))\s*$/i.test(trimmed)) {
     return false;
   }
-  // Từ khóa rác từng xuất hiện do nhiễu ngữ cảnh
+
   if (/^(dựa|theo|foodcare xin)$/i.test(trimmed)) {
     return false;
   }
@@ -78,7 +75,6 @@ const isValidAIResponse = (text, userMessage = '') => {
 const generateAIResponse = async (systemPrompt, conversationHistory, message) => {
   const messages = buildMessages(systemPrompt, conversationHistory, message);
 
-  // 1. Ưu tiên Google Gemini (Timeout 8.5s, maxRetries: 0 để không nhân 3 thời gian chờ)
   if (process.env.GEMINI_API_KEY) {
     try {
       const gemini = new OpenAI({
@@ -104,7 +100,6 @@ const generateAIResponse = async (systemPrompt, conversationHistory, message) =>
     }
   }
 
-  // 2. Dự phòng (Fallback) với Groq (Timeout 5.5s, maxRetries: 0 - Tổng thời gian tối đa 8.5s + 5.5s = 14s < 15s)
   if (process.env.GROQ_API_KEY) {
     const groq = new OpenAI({
       apiKey: process.env.GROQ_API_KEY,
@@ -134,7 +129,6 @@ const generateAIResponse = async (systemPrompt, conversationHistory, message) =>
       }
     }
 
-    // 3. Nếu vẫn chưa hợp lệ, thử lại Groq 1 lần với Prompt trực tiếp không kèm lịch sử cũ (Zero-shot)
     try {
       const cleanMessages = [
         { role: 'system', content: systemPrompt },
