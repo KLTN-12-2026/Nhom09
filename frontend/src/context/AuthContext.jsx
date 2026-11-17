@@ -42,30 +42,27 @@ export const AuthProvider = ({ children }) => {
     axiosClient.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   };
 
-  // Ref để track userId hiện tại (tránh stale closure trong async callback)
   const currentUserIdRef = useRef(user?._id ?? null);
   useEffect(() => {
     currentUserIdRef.current = user?._id ?? null;
   }, [user?._id]);
 
-  // Sync tier/totalSpent một lần khi userId thay đổi (login mới hoặc tải trang)
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userId = user?._id;
 
-    // Chỉ sync khi có token + userId và chưa sync cho userId này
     if (!token || !userId || syncedUserIdRef.current === userId) return;
 
     syncedUserIdRef.current = userId;
 
     axiosClient.get('/auth/me').then(({ data }) => {
-      // Kiểm tra userId vẫn còn khớp trước khi cập nhật (tránh race condition)
+
       if (currentUserIdRef.current !== userId) return;
       if (data.totalSpent !== undefined || data.tier !== undefined) {
         updateUser({ totalSpent: data.totalSpent, tier: data.tier });
       }
     }).catch((error) => {
-      // Chỉ xóa session khi userId vẫn khớp VÀ lỗi 401 xác thực không thành công
+
       if (currentUserIdRef.current !== userId) return;
       if (error.response?.status === 401) {
         syncedUserIdRef.current = null;
@@ -77,8 +74,7 @@ export const AuthProvider = ({ children }) => {
         console.warn('Không thể đồng bộ dữ liệu người dùng (server local):', error.message);
       }
     });
-  // Chỉ phụ thuộc vào user._id – KHÔNG thêm totalSpent/tier để tránh re-run vô tận
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [user?._id]);
 
   const login = useCallback(async (email, password) => {
@@ -152,5 +148,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
+

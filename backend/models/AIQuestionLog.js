@@ -41,9 +41,9 @@ const aiQuestionLogSchema = mongoose.Schema(
   }
 );
 
-// Tạo index để tìm kiếm và thống kê nhanh theo thời gian và chủ đề
 aiQuestionLogSchema.index({ createdAt: -1 });
 aiQuestionLogSchema.index({ topics: 1 });
 
 const AIQuestionLog = mongoose.model('AIQuestionLog', aiQuestionLogSchema);
 export default AIQuestionLog;
+

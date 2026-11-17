@@ -61,3 +61,4 @@ test('reports failure without configured credentials', async () => {
   if (previousPass === undefined) delete process.env.EMAIL_PASS;
   else process.env.EMAIL_PASS = previousPass;
 });
+

@@ -6,7 +6,7 @@ const AllergyWarningModal = ({ isOpen, onClose, onConfirm, food, warnings }) => 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-rose-100 overflow-hidden transform transition-all animate-scale-up">
-        {/* Header */}
+
         <div className="bg-gradient-to-r from-rose-500 to-amber-500 p-5 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
@@ -25,7 +25,6 @@ const AllergyWarningModal = ({ isOpen, onClose, onConfirm, food, warnings }) => 
           </button>
         </div>
 
-        {/* Body */}
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100">
             {food.images?.[0] ? (
@@ -76,7 +75,6 @@ const AllergyWarningModal = ({ isOpen, onClose, onConfirm, food, warnings }) => 
           </div>
         </div>
 
-        {/* Footer Actions */}
         <div className="p-5 pt-0 flex gap-3">
           <button
             type="button"
@@ -100,3 +98,4 @@ const AllergyWarningModal = ({ isOpen, onClose, onConfirm, food, warnings }) => 
 };
 
 export default AllergyWarningModal;
+

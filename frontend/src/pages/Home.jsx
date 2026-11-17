@@ -73,7 +73,6 @@ const Home = () => {
     <div>
       <Hero3D />
 
-      {/* ========== WHY FOODCARE SECTION ========== */}
       <section className="py-20 px-6 md:px-16 bg-gradient-to-b from-white to-[#F0F8F3]/50">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-14">
@@ -106,7 +105,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ========== AI SECTION ========== */}
       <section className="px-6 py-20 md:px-16 bg-white">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-12 text-center">
@@ -121,7 +119,7 @@ const Home = () => {
           </div>
 
           <div className="flex flex-col gap-10 md:flex-row items-start">
-            {/* AI Chat Preview */}
+
             <div className="glassmorphism relative flex-1 overflow-hidden rounded-3xl p-6 shadow-3d border border-[#E8EEE9]">
               <div className="mb-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-emerald-400 flex items-center justify-center font-bold text-white shadow-md">
@@ -157,7 +155,6 @@ const Home = () => {
               </Link>
             </div>
 
-            {/* Food Slider */}
             <div className="flex-1">
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm font-semibold text-gray-500">Gợi ý hôm nay</p>
@@ -232,7 +229,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ========== CTA BANNER ========== */}
       <section className="py-20 px-6 md:px-16">
         <div className="container mx-auto max-w-4xl">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-dark to-primary p-10 md:p-14 text-center shadow-float">
@@ -268,3 +264,4 @@ const Home = () => {
 };
 
 export default Home;
+

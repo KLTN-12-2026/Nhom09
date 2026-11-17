@@ -7,7 +7,6 @@ const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user } = useAuth();
 
-  // Chưa đăng nhập → chuyển về trang login
   if (!user) {
     return <Navigate to="/login" state={{ from: '/cart' }} replace />;
   }
@@ -52,7 +51,7 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto px-4 md:px-12 py-10">
-      {/* Header */}
+
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-dark">Giỏ Hàng</h1>
@@ -67,14 +66,14 @@ const Cart = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Cart Items */}
+
         <div className="lg:w-2/3 space-y-4">
           {cartItems.map((item) => (
             <div
               key={item.food}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 p-4 transition-all hover:shadow-md"
             >
-              {/* Image */}
+
               <Link to={`/food/${item.food}`} className="flex-shrink-0">
                 <img
                   src={item.images?.[0]}
@@ -84,14 +83,12 @@ const Cart = () => {
                 />
               </Link>
 
-              {/* Info */}
               <div className="flex-1 min-w-0">
                 <Link to={`/food/${item.food}`}>
                   <h3 className="font-bold text-base hover:text-primary transition-colors line-clamp-1">{item.name}</h3>
                 </Link>
                 <p className="text-primary font-bold mt-1">{item.price.toLocaleString('vi-VN')}đ / phần</p>
 
-                {/* Quantity Controls */}
                 <div className="flex items-center gap-3 mt-3">
                   <div className="flex items-center bg-gray-50 rounded-full border border-gray-200 overflow-hidden">
                     <button
@@ -119,7 +116,6 @@ const Cart = () => {
                 </div>
               </div>
 
-              {/* Delete */}
               <button
                 onClick={() => removeFromCart(item.food)}
                 className="flex-shrink-0 w-9 h-9 bg-red-50 text-red-400 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"
@@ -131,7 +127,6 @@ const Cart = () => {
           ))}
         </div>
 
-        {/* Order Summary */}
         <div className="lg:w-1/3">
           <div className="bg-white p-6 rounded-3xl shadow-3d border border-gray-50 sticky top-28">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -187,3 +182,4 @@ const Cart = () => {
 };
 
 export default Cart;
+

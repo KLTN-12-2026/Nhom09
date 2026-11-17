@@ -54,3 +54,4 @@ const sendContactEmail = async ({ name, email, subject, message }) => {
 };
 
 export default sendContactEmail;
+

@@ -18,7 +18,6 @@ import axiosClient from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
-/* ─── helpers ─── */
 const formatDateTime = (val) =>
   val
     ? new Date(val).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })
@@ -43,7 +42,6 @@ const renderResponse = (text = '') => {
   ));
 };
 
-/* ─── Main Page ─── */
 const AIChatHistory = () => {
   const { user } = useAuth();
   const { addToCart } = useCart();
@@ -55,7 +53,7 @@ const AIChatHistory = () => {
   const [expanded, setExpanded] = useState({});
   const [deletingId, setDeletingId] = useState(null);
   const [clearingAll, setClearingAll] = useState(false);
-  const [viewScope, setViewScope] = useState('mine'); // 'mine' | 'all' (Admin only)
+  const [viewScope, setViewScope] = useState('mine');
   const searchRef = useRef(null);
 
   useEffect(() => {
@@ -131,7 +129,7 @@ const AIChatHistory = () => {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 md:px-8 py-10 min-h-[80vh]">
-      {/* ── Header ── */}
+
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -149,7 +147,6 @@ const AIChatHistory = () => {
             </div>
           </div>
 
-          {/* Admin Scope Switcher */}
           {isAdmin && (
             <div className="inline-flex rounded-xl bg-gray-100 p-1 border border-gray-200 text-xs font-bold">
               <button
@@ -179,9 +176,8 @@ const AIChatHistory = () => {
         </div>
       </div>
 
-      {/* ── Toolbar ── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        {/* Search */}
+
         <div className="relative flex-1">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -201,14 +197,14 @@ const AIChatHistory = () => {
             </button>
           )}
         </div>
-        {/* Quick link to AI page */}
+
         <Link
           to="/ai-recommend"
           className="flex items-center gap-2 h-11 px-5 rounded-xl bg-primary text-white text-sm font-bold shadow hover:bg-primary-dark transition-all hover:-translate-y-0.5"
         >
           <Bot size={16} /> Chat mới
         </Link>
-        {/* Clear all */}
+
         {history.length > 0 && (
           <button
             onClick={handleClearAll}
@@ -221,7 +217,6 @@ const AIChatHistory = () => {
         )}
       </div>
 
-      {/* ── Search result hint ── */}
       {search && (
         <p className="text-sm text-gray-500 mb-4">
           Tìm thấy <span className="font-bold text-dark">{filtered.length}</span> kết quả cho
@@ -229,7 +224,6 @@ const AIChatHistory = () => {
         </p>
       )}
 
-      {/* ── Content ── */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 text-gray-400">
           <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
@@ -269,15 +263,15 @@ const AIChatHistory = () => {
                 key={chat._id}
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all hover:shadow-md"
               >
-                {/* ── Card Header ── */}
+
                 <div className="flex items-start gap-3 p-5">
-                  {/* Index badge */}
+
                   <div className="w-8 h-8 rounded-full bg-primary-light/40 border border-primary-light flex-shrink-0 flex items-center justify-center text-xs font-bold text-primary">
                     {history.length - idx}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    {/* User question */}
+
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2 min-w-0">
                         <MessageCircle size={14} className="mt-0.5 flex-shrink-0 text-gray-400" />
@@ -304,7 +298,6 @@ const AIChatHistory = () => {
                       </div>
                     </div>
 
-                    {/* Metadata row */}
                     <div className="flex flex-wrap items-center gap-3 mt-2">
                       <span className="flex items-center gap-1 text-xs text-gray-400">
                         <Clock size={11} />
@@ -323,7 +316,6 @@ const AIChatHistory = () => {
                       )}
                     </div>
 
-                    {/* Preview (collapsed) */}
                     {!isExpanded && chat.response && (
                       <p className="mt-2 text-xs text-gray-500 line-clamp-2 leading-relaxed">
                         {chat.response.replace(/RECOMMENDATIONS:.*/i, '').trim()}
@@ -332,10 +324,9 @@ const AIChatHistory = () => {
                   </div>
                 </div>
 
-                {/* ── Expanded Content ── */}
                 {isExpanded && (
                   <div className="border-t border-gray-50 bg-gray-50/50">
-                    {/* AI response bubble */}
+
                     <div className="p-5">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex-shrink-0 flex items-center justify-center shadow">
@@ -344,7 +335,6 @@ const AIChatHistory = () => {
                         <div className="flex-1 bg-white border border-primary-light rounded-2xl rounded-tl-sm p-4 text-sm text-gray-800 shadow-sm">
                           {renderResponse(chat.response)}
 
-                          {/* Disclaimer */}
                           <div className="mt-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-100 rounded-xl text-xs text-amber-700">
                             <AlertTriangle size={13} className="mt-0.5 flex-shrink-0" />
                             Thông tin chỉ mang tính tham khảo. Hãy hỏi bác sĩ hoặc chuyên gia dinh dưỡng nếu cần.
@@ -352,7 +342,6 @@ const AIChatHistory = () => {
                         </div>
                       </div>
 
-                      {/* Recommended Food Cards */}
                       {chat.recommendedFoods?.length > 0 && (
                         <div className="mt-5">
                           <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
@@ -418,3 +407,4 @@ const AIChatHistory = () => {
 };
 
 export default AIChatHistory;
+

@@ -9,7 +9,6 @@ export const FavoriteProvider = ({ children }) => {
   const { user } = useAuth();
   const [favoriteIds, setFavoriteIds] = useState(new Set());
 
-  // Load favorites khi user đăng nhập
   useEffect(() => {
     if (!user) {
       setTimeout(() => setFavoriteIds(new Set()), 0);
@@ -37,7 +36,6 @@ export const FavoriteProvider = ({ children }) => {
       return;
     }
 
-    // Optimistic update
     setFavoriteIds((prev) => new Set([...prev, food._id]));
 
     try {
@@ -45,7 +43,7 @@ export const FavoriteProvider = ({ children }) => {
       toast.success('Thêm vào danh sách yêu thích thành công');
       setFavoriteIds(new Set(data.favoriteFoods));
     } catch (error) {
-      // Rollback
+
       setFavoriteIds((prev) => {
         const next = new Set(prev);
         next.delete(food._id);
@@ -57,8 +55,7 @@ export const FavoriteProvider = ({ children }) => {
 
   const removeFavorite = useCallback(async (food) => {
     if (!user) return;
-    
-    // Optimistic update
+
     setFavoriteIds((prev) => {
       const next = new Set(prev);
       next.delete(food._id);
@@ -70,7 +67,7 @@ export const FavoriteProvider = ({ children }) => {
       toast.info('Đã xóa khỏi yêu thích');
       setFavoriteIds(new Set(data.favoriteFoods));
     } catch {
-      // Rollback
+
       setFavoriteIds((prev) => new Set([...prev, food._id]));
       toast.error('Có lỗi xảy ra khi xóa');
     }
@@ -97,5 +94,5 @@ export const FavoriteProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useFavorite = () => useContext(FavoriteContext);
+

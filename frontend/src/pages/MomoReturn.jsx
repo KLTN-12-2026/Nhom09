@@ -41,7 +41,7 @@ const MomoReturn = () => {
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center py-20 px-4 text-center">
-      {/* Status Icon */}
+
       <div className="relative mb-8">
         <div className={`w-28 h-28 rounded-full flex items-center justify-center shadow-lg ${
           displaySuccess ? 'bg-green-50' : isPending ? 'bg-orange-50' : 'bg-red-50'
@@ -129,3 +129,4 @@ const MomoReturn = () => {
 };
 
 export default MomoReturn;
+

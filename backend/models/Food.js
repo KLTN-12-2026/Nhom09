@@ -73,3 +73,4 @@ const foodSchema = mongoose.Schema(
 
 const Food = mongoose.model('Food', foodSchema);
 export default Food;
+

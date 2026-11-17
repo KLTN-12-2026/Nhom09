@@ -28,3 +28,4 @@ router.route('/favorites').get(protect, getFavorites);
 router.route('/favorites/:foodId').post(protect, addFavorite).delete(protect, removeFavorite);
 
 export default router;
+

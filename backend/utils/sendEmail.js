@@ -107,3 +107,4 @@ const sendOrderConfirmationEmail = async (order, email, options = {}) => {
 };
 
 export default sendOrderConfirmationEmail;
+

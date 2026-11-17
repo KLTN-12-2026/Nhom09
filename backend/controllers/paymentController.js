@@ -160,7 +160,7 @@ export const handleMomoIpn = async (req, res) => {
         const extraData = JSON.parse(Buffer.from(req.body.extraData, 'base64').toString('utf8'));
         appOrderId = extraData.orderId || appOrderId;
       } catch {
-        // Fallback to MoMo orderId parsing above.
+
       }
     }
 
@@ -221,10 +221,6 @@ export const confirmMomoPaymentForDev = async (req, res) => {
   }
 };
 
-// ==========================================
-// VNPay Sandbox Payment Gateway Handlers
-// ==========================================
-
 const formatVnpayDate = (date) => {
   const pad = (n) => (n < 10 ? '0' + n : n);
   const d = new Date(date.getTime() + 7 * 60 * 60 * 1000);
@@ -256,9 +252,6 @@ function sortVnpayParams(obj) {
   return sorted;
 }
 
-// @desc    Create VNPay payment URL
-// @route   POST /api/payments/vnpay/create
-// @access  Private
 export const createVnpayPayment = async (req, res) => {
   try {
     const tmnCode = (process.env.VNP_TMN_CODE || '').trim();
@@ -287,7 +280,7 @@ export const createVnpayPayment = async (req, res) => {
 
     const createDate = formatVnpayDate(new Date());
     const txnRef = `${order._id.toString()}_${Date.now()}`;
-    const amount = Math.round(Number(order.totalAmount)) * 100; // VNPay quy định nhân 100
+    const amount = Math.round(Number(order.totalAmount)) * 100;
 
     let vnpParams = {
       vnp_Version: '2.1.0',
@@ -329,9 +322,6 @@ export const createVnpayPayment = async (req, res) => {
   }
 };
 
-// @desc    Verify VNPay return / check transaction result
-// @route   POST /api/payments/vnpay/verify
-// @access  Public
 export const verifyVnpayPayment = async (req, res) => {
   try {
     const vnpParams = { ...req.body };
@@ -366,7 +356,7 @@ export const verifyVnpayPayment = async (req, res) => {
     }
 
     if (responseCode === '00') {
-      // Giao dịch thành công
+
       if (order.paymentStatus !== 'paid') {
         await markOrderAsPaid(order);
         const io = req.app.get('io');
@@ -382,7 +372,7 @@ export const verifyVnpayPayment = async (req, res) => {
         transactionNo: vnpParams.vnp_TransactionNo,
       });
     } else {
-      // Giao dịch thất bại hoặc bị hủy
+
       return res.json({
         success: false,
         message: 'Giao dịch qua cổng VNPay không thành công hoặc người dùng đã hủy',
@@ -395,3 +385,4 @@ export const verifyVnpayPayment = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+

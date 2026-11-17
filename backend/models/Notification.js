@@ -4,7 +4,7 @@ const notificationSchema = mongoose.Schema(
   {
     type: {
       type: String,
-      required: true, // e.g., 'REVIEW'
+      required: true,
     },
     message: {
       type: String,
@@ -30,3 +30,4 @@ const notificationSchema = mongoose.Schema(
 
 const Notification = mongoose.model('Notification', notificationSchema);
 export default Notification;
+

@@ -36,7 +36,6 @@ const Checkout = () => {
 
   const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  // Guard: chưa đăng nhập → về trang login, sau khi login quay lại checkout
   if (!user) {
     return <Navigate to="/login" state={{ from: '/checkout' }} replace />;
   }
@@ -52,8 +51,7 @@ const Checkout = () => {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    
-    // Validation số điện thoại Việt Nam
+
     const phoneRegex = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
     if (!phoneRegex.test(phone.trim())) {
       toast.error('Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại Việt Nam (VD: 0912345678)');
@@ -89,7 +87,7 @@ const Checkout = () => {
         shippingAddress: finalAddress,
         phone: phone.trim(),
         email,
-        recipientName, // we might need to send this to backend or just keep in address. For now backend Order schema doesn't have recipientName specifically, so we'll append to note or it's fine.
+        recipientName,
         paymentMethod,
         totalAmount: finalAmount,
         note: note ? `Người nhận: ${recipientName}. Ghi chú: ${note}` : `Người nhận: ${recipientName}`
@@ -207,9 +205,9 @@ const Checkout = () => {
         <span className="text-gray-300">|</span>
         <h1 className="text-2xl font-bold text-dark">Thanh Toán</h1>
       </div>
-      
+
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left: Form */}
+
         <div className="lg:w-2/3">
           <form onSubmit={placeOrder} className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
             <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
@@ -222,10 +220,10 @@ const Checkout = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">Họ tên người nhận <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={recipientName} 
+                    value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     placeholder="Tên người nhận hàng"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -236,8 +234,8 @@ const Checkout = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">Số điện thoại <span className="text-red-500">*</span></label>
-                  <input 
-                    type="tel" 
+                  <input
+                    type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -247,8 +245,8 @@ const Checkout = () => {
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">Email nhận thông báo <span className="text-red-500">*</span></label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -261,8 +259,8 @@ const Checkout = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="hidden">
                   <label className="block text-gray-700 font-semibold mb-2">Tỉnh / Thành phố</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value="Đà Nẵng"
                     readOnly
                     placeholder="VD: TP. HCM"
@@ -285,8 +283,8 @@ const Checkout = () => {
                 </div>
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">Phường <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
                     value={ward}
                     onChange={(e) => setWard(e.target.value)}
@@ -298,7 +296,7 @@ const Checkout = () => {
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Số nhà / Tên đường <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   type="text"
                   required
                   value={houseAddress}
@@ -311,7 +309,7 @@ const Checkout = () => {
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">Ghi chú đơn hàng (Tùy chọn)</label>
-                <textarea 
+                <textarea
                   rows="2"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
@@ -403,7 +401,7 @@ const Checkout = () => {
                 )}
               </div>
             </div>
-            
+
             <button
               type="submit"
               disabled={loading}
@@ -428,11 +426,10 @@ const Checkout = () => {
           </form>
         </div>
 
-        {/* Right: Summary */}
         <div className="lg:w-1/3">
           <div className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 sticky top-28">
             <h3 className="text-xl font-bold mb-6 border-b pb-4">Tóm tắt đơn hàng</h3>
-            
+
             <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
               {cartItems.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center gap-2">
@@ -474,7 +471,6 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* Modal VietQR hiển thị mã QR kèm đúng số tiền */}
       <VietQrModal
         isOpen={isBankModalOpen}
         onClose={handleCloseBankModal}
@@ -486,3 +482,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+

@@ -29,3 +29,4 @@ const aiChatSchema = mongoose.Schema(
 
 const AIChat = mongoose.model('AIChat', aiChatSchema);
 export default AIChat;
+

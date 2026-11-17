@@ -7,7 +7,6 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import { useAuth } from './context/AuthContext';
 
-// Lazy load tất cả pages – chỉ tải khi cần, giảm bundle ban đầu đáng kể
 const Home          = lazy(() => import('./pages/Home'));
 const Foods         = lazy(() => import('./pages/Foods'));
 const FoodDetail    = lazy(() => import('./pages/FoodDetail'));
@@ -28,7 +27,6 @@ const AIChatHistory = lazy(() => import('./pages/AIChatHistory'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 const AIChatbot     = lazy(() => import('./components/AIChatbot'));
 
-// Skeleton loading – hiển thị trong khi lazy chunk đang tải
 const PageSkeleton = () => (
   <div className="min-h-screen flex items-center justify-center bg-light">
     <div className="flex flex-col items-center gap-4">
@@ -38,11 +36,9 @@ const PageSkeleton = () => (
   </div>
 );
 
-// Route guard: chỉ cho phép tài khoản có role 'admin' vào
 const AdminRoute = ({ children }) => {
   const { user } = useAuth();
 
-  // Đọc dự phòng từ localStorage nếu vừa đăng nhập xong mà React Context chưa kịp hoàn tất commit
   const currentUser = user || (() => {
     try {
       const stored = localStorage.getItem('userInfo');
@@ -119,3 +115,4 @@ function App() {
 }
 
 export default App;
+

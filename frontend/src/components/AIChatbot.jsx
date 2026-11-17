@@ -6,7 +6,6 @@ import axiosClient from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
-/* ─── Hằng số tĩnh ngoài component để tránh tái cấp phát bộ nhớ ─── */
 const QUICK_CHIPS = [
   'Tôi bị tiểu đường',
   'Tôi đang giảm cân',
@@ -22,7 +21,6 @@ const FALLBACK_FOOD_IMAGE =
 const LABEL_PATTERN =
   /(Món chính|Món phụ|Đồ uống|Tráng miệng|Bữa sáng|Bữa trưa|Bữa tối|Gợi ý|Lưu ý|Khuyến nghị|Thực đơn|Calories|Protein|Tinh bột|Chất béo|Chất xơ|Giá|Lý do)\s*:/gi;
 
-/* ─── Bộ phân tích nội dung phản hồi của AI hỗ trợ Markdown nhẹ ─── */
 const FormattedResponse = memo(({ text = '' }) => {
   const renderedContent = useMemo(() => {
     return text.split('\n').map((rawLine, lineIndex) => {
@@ -32,7 +30,6 @@ const FormattedResponse = memo(({ text = '' }) => {
       const isBullet = line.startsWith('- ') || line.startsWith('* ');
       const cleanLine = isBullet ? line.substring(2) : line;
 
-      // Xử lý markdown in đậm **text** kết hợp với nhãn y tế / dinh dưỡng
       const parts = cleanLine.split(/(\*\*.*?\*\*)/g);
 
       const content = parts.map((part, pIdx) => {
@@ -44,7 +41,6 @@ const FormattedResponse = memo(({ text = '' }) => {
           );
         }
 
-        // Đánh dấu các nhãn danh mục thực đơn
         return part.split(LABEL_PATTERN).map((subPart, sIdx) => {
           if (sIdx % 2 === 1) {
             return (
@@ -70,7 +66,6 @@ const FormattedResponse = memo(({ text = '' }) => {
 
 FormattedResponse.displayName = 'FormattedResponse';
 
-/* ─── Thẻ món ăn đề xuất được bọc Memo tránh re-render thừa ─── */
 const RecommendedFoodCard = memo(({ food, onSelectFood, onAddToCart }) => {
   const calories = food.nutrition?.calories;
   const priceFormatted = Number(food.price || 0).toLocaleString('vi-VN');
@@ -122,7 +117,6 @@ const RecommendedFoodCard = memo(({ food, onSelectFood, onAddToCart }) => {
 
 RecommendedFoodCard.displayName = 'RecommendedFoodCard';
 
-/* ─── Component Chính AIChatbot ─── */
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -137,7 +131,6 @@ const AIChatbot = () => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
-  // Reset cuộc trò chuyện khi đổi tài khoản
   const [prevUserId, setPrevUserId] = useState(user?._id);
   if (prevUserId !== user?._id) {
     setPrevUserId(user?._id);
@@ -145,7 +138,6 @@ const AIChatbot = () => {
     setMessage('');
   }
 
-  // Cuộn trang mượt mà qua requestAnimationFrame đảm bảo DOM render xong
   const scrollToBottom = useCallback(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -161,7 +153,6 @@ const AIChatbot = () => {
     return () => cancelAnimationFrame(animId);
   }, [chatHistory, loading, isOpen, scrollToBottom]);
 
-  // Tự động focus ô nhập liệu khi mở chat và phím tắt Escape
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 150);
@@ -218,12 +209,11 @@ const AIChatbot = () => {
     }
   }, [loading, user]);
 
-
   const closeChat = useCallback(() => setIsOpen(false), []);
 
   return (
     <>
-      {/* Floating Action Button - Sử dụng CSS ring pulse thuần cho 60fps mượt mà, không tốn CPU */}
+
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -233,7 +223,6 @@ const AIChatbot = () => {
         {isOpen ? <X size={28} /> : <Sparkles size={28} className="animate-spin-slow" />}
       </button>
 
-      {/* Cửa sổ Chat */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -247,7 +236,7 @@ const AIChatbot = () => {
                 : 'bottom-24 right-4 md:right-6 w-[calc(100vw-32px)] sm:w-[390px] h-[580px] max-h-[78vh] rounded-3xl'
             }`}
           >
-            {/* Header */}
+
             <div className="bg-gradient-to-r from-primary via-orange-500 to-amber-500 p-4 text-white flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-md">
@@ -291,7 +280,6 @@ const AIChatbot = () => {
               </div>
             </div>
 
-            {/* Chat Messages Area */}
             <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 bg-slate-50/60 space-y-4">
               {chatHistory.length === 0 && !loading && user && (
                 <div className="h-full flex flex-col items-center justify-center text-gray-400 py-12 text-center">
@@ -307,14 +295,13 @@ const AIChatbot = () => {
 
               {chatHistory.map((chat) => (
                 <div key={chat._id} className="space-y-3">
-                  {/* Tin nhắn từ người dùng */}
+
                   <div className="flex justify-end">
                     <div className="bg-primary text-white px-4 py-2.5 rounded-2xl rounded-tr-xs max-w-[85%] shadow-sm text-sm font-medium leading-relaxed">
                       {chat.message}
                     </div>
                   </div>
 
-                  {/* Phản hồi từ AI */}
                   <div className="flex justify-start gap-2.5 items-start">
                     <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-primary to-primary-dark shrink-0 flex items-center justify-center text-white shadow-sm mt-0.5">
                       <Sparkles size={13} />
@@ -331,7 +318,6 @@ const AIChatbot = () => {
                         <FormattedResponse text={chat.response} />
                       )}
 
-                      {/* Danh sách món ăn gợi ý đính kèm */}
                       {chat.recommendedFoods?.length > 0 && (
                         <div className="mt-3.5 space-y-2 border-t border-gray-100 pt-3">
                           <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
@@ -353,11 +339,10 @@ const AIChatbot = () => {
               ))}
             </div>
 
-            {/* Input & Quick Chips */}
             <div className="bg-white border-t border-gray-100">
               {user ? (
                 <>
-                  {/* Quick Chips Câu hỏi nhanh */}
+
                   <div className="px-3 py-2 flex gap-1.5 overflow-x-auto no-scrollbar border-b border-gray-50 bg-gray-50/50">
                     {QUICK_CHIPS.map((chip, idx) => (
                       <button
@@ -372,7 +357,6 @@ const AIChatbot = () => {
                     ))}
                   </div>
 
-                  {/* Form Gửi tin nhắn */}
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -423,3 +407,4 @@ const AIChatbot = () => {
 };
 
 export default AIChatbot;
+

@@ -38,3 +38,4 @@ const admin = (req, res, next) => {
 };
 
 export { protect, admin };
+

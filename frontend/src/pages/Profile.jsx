@@ -129,7 +129,6 @@ const Profile = () => {
     return () => clearTimeout(syncHealthData);
   }, [user?.healthProfile]);
 
-  // Đồng bộ thông tin cá nhân khi user thay đổi (sau khi lưu hoặc quay lại trang)
   useEffect(() => {
     const syncInfoData = setTimeout(() => {
       setInfoData({
@@ -175,7 +174,7 @@ const Profile = () => {
     return () => {
       ignoreRequest = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [user?._id]);
 
   useEffect(() => {
@@ -464,10 +463,9 @@ const Profile = () => {
 
           {activeTab === 'health' && (
             <div className="space-y-6">
-              {/* Card Dinh dưỡng TDEE / BMR & Macro Targets */}
+
               <NutritionTargetCard healthProfile={user?.healthProfile} />
 
-              {/* Form / Chi tiết Hồ sơ sức khỏe */}
               <section className="rounded-3xl border border-gray-100 bg-white p-8 shadow-3d">
                 <div className="mb-6 flex items-center justify-between border-b pb-4">
                   <div>
@@ -572,7 +570,6 @@ const Profile = () => {
                       </label>
                     </div>
 
-                    {/* Dị ứng thực phẩm */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="block text-sm font-semibold text-gray-700">
@@ -589,7 +586,7 @@ const Profile = () => {
                         value={healthData.allergies}
                         onChange={(e) => setHealthData({ ...healthData, allergies: e.target.value })}
                       />
-                      {/* Gợi ý bấm nhanh */}
+
                       <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         <span className="text-[11px] text-gray-400">Chọn nhanh:</span>
                         {COMMON_ALLERGIES.map((item) => {
@@ -617,7 +614,6 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    {/* Bệnh lý hoặc lưu ý dinh dưỡng */}
                     <label className="block">
                       <span className="mb-1 block text-sm font-semibold text-gray-700">Bệnh lý nền hoặc lưu ý y tế</span>
                       <textarea
@@ -673,7 +669,6 @@ const Profile = () => {
                       />
                     </div>
 
-                    {/* Dị ứng */}
                     <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80">
                       <div className="flex items-center gap-2 text-rose-700 font-bold text-sm mb-2">
                         <ShieldAlert size={18} />
@@ -695,7 +690,6 @@ const Profile = () => {
                       )}
                     </div>
 
-                    {/* Bệnh lý */}
                     <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80">
                       <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Bệnh lý nền / Lưu ý dinh dưỡng:</p>
                       <p className="text-sm font-medium text-amber-900">
@@ -718,7 +712,7 @@ const Profile = () => {
                   Ưu đãi của tôi
                 </h3>
               </div>
-              
+
               <div className="flex flex-col md:flex-row gap-6 mb-8">
                 <div className={`flex-1 rounded-3xl p-6 relative overflow-hidden ${
                   user?.tier === 'Kim Cương' ? 'bg-gradient-to-br from-violet-50 to-violet-100 border border-violet-200' :
@@ -743,18 +737,18 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex-1 rounded-3xl p-6 bg-gray-50 border border-gray-100 flex flex-col justify-center">
                   <p className="text-sm font-bold text-gray-500 mb-2">Tổng chi tiêu tích luỹ</p>
                   <p className="text-3xl font-black text-dark mb-3">{formatCurrency(user?.totalSpent || 0)}</p>
-                  
+
                   {user?.tier === 'Kim Cương' ? (
                     <div className="text-sm font-semibold text-violet-600">Bạn đã đạt hạng cao nhất!</div>
                   ) : (
                     <div>
                       <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${user?.tier === 'Vàng' ? 'bg-violet-500' : 'bg-amber-500'}`} 
+                        <div
+                          className={`h-full ${user?.tier === 'Vàng' ? 'bg-violet-500' : 'bg-amber-500'}`}
                           style={{ width: `${Math.min(100, ((user?.totalSpent || 0) / (user?.tier === 'Vàng' ? 20000000 : 5000000)) * 100)}%` }}
                         ></div>
                       </div>
@@ -785,7 +779,7 @@ const Profile = () => {
                   </li>
                 )}
               </ul>
-              
+
               <div className="mt-8 text-center">
                 <Link to="/offers" className="inline-flex items-center gap-2 rounded-xl bg-gray-100 px-5 py-2 font-bold text-gray-700 transition hover:bg-gray-200">
                   Xem chi tiết hạng mức
@@ -801,7 +795,7 @@ const Profile = () => {
                   <h3 className="text-2xl font-bold text-dark">Theo dõi đơn hàng</h3>
                   <p className="text-sm text-gray-500">Các đơn đang chờ xác nhận, đang chuẩn bị hoặc đang giao.</p>
                 </div>
-                {/* Thanh tìm kiếm đơn đang giao */}
+
                 <div className="relative">
                   <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -842,7 +836,7 @@ const Profile = () => {
 
           {activeTab === 'history' && (
             <section className="space-y-4">
-              {/* Header + bộ lọc */}
+
               <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div>
@@ -850,7 +844,7 @@ const Profile = () => {
                     <p className="text-sm text-gray-500">Xem lại các đơn đã hoàn thành hoặc đã hủy.</p>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    {/* Thanh tìm kiếm */}
+
                     <div className="relative">
                       <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                       <input
@@ -869,7 +863,7 @@ const Profile = () => {
                         </button>
                       )}
                     </div>
-                    {/* Filter trạng thái */}
+
                     <select
                       value={historyFilter}
                       onChange={(event) => setHistoryFilter(event.target.value)}
@@ -881,7 +875,7 @@ const Profile = () => {
                     </select>
                   </div>
                 </div>
-                {/* Kết quả tìm kiếm */}
+
                 {historySearch && (
                   <p className="mt-3 text-sm text-gray-500">
                     Tìm thấy <span className="font-bold text-dark">{historyOrders.length}</span> đơn hàng cho &quot;<span className="text-primary">{historySearch}</span>&quot;
@@ -889,7 +883,6 @@ const Profile = () => {
                 )}
               </div>
 
-              {/* Gợi ý thông minh nếu đơn hàng đang ở mục Theo dõi đơn hàng */}
               {matchedInTracking && (
                 <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm shadow-sm">
                   <div className="flex items-center gap-3">
@@ -930,7 +923,6 @@ const Profile = () => {
         </main>
       </div>
 
-      {/* Modal hiển thị mã QR VietQR khi khách muốn xem lại mã */}
       <VietQrModal
         isOpen={isBankQrModalOpen}
         onClose={() => setIsBankQrModalOpen(false)}
@@ -1017,7 +1009,7 @@ const OrderCard = ({ order, onCancelOrder, onReorder, onViewBankQr }) => {
         </div>
         <div className="flex flex-wrap items-center gap-2 md:justify-end">
           <StatusBadge status={order.orderStatus} />
-          {/* Nút xem lại mã QR nếu là đơn BANK chưa thanh toán */}
+
           {order.paymentMethod === 'BANK' && order.paymentStatus === 'unpaid' && !isCancelled && (
             <button
               type="button"
@@ -1040,7 +1032,7 @@ const OrderCard = ({ order, onCancelOrder, onReorder, onViewBankQr }) => {
               </button>
             )
           )}
-          {/* Nút Mua lại – chỉ hiện cho đơn lịch sử */}
+
           {isHistory && onReorder && (
             <button
               onClick={() => onReorder(order.items)}
@@ -1101,7 +1093,7 @@ const OrderCard = ({ order, onCancelOrder, onReorder, onViewBankQr }) => {
             <p className="text-xl font-extrabold text-primary">{formatCurrency(order.totalAmount)}</p>
           </div>
         </div>
-        {/* Nút Mua lại lớn ở cuối card – chỉ cho đơn hoàn thành */}
+
         {isCompleted && onReorder && (
           <button
             onClick={() => onReorder(order.items)}
@@ -1130,3 +1122,4 @@ const OrderMeta = ({ label, value }) => (
 );
 
 export default Profile;
+

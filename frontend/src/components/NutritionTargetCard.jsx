@@ -23,7 +23,7 @@ const NutritionTargetCard = ({ healthProfile }) => {
 
   return (
     <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/20 to-teal-50/30 p-6 md:p-8 shadow-sm space-y-6">
-      {/* Header */}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -41,9 +41,8 @@ const NutritionTargetCard = ({ healthProfile }) => {
         </div>
       </div>
 
-      {/* 4 Cards Thống kê chính */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        {/* BMI */}
+
         <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between text-gray-400 mb-2">
             <span className="text-xs font-semibold text-gray-500">Chỉ số BMI</span>
@@ -56,7 +55,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
           <p className={`text-xs font-bold mt-2 truncate ${bmiColor}`}>{bmiCategory}</p>
         </div>
 
-        {/* BMR */}
         <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between text-gray-400 mb-2">
             <span className="text-xs font-semibold text-gray-500">BMR (Cơ bản)</span>
@@ -69,7 +67,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
           <p className="text-[11px] text-gray-400 mt-2">Năng lượng duy trì sự sống</p>
         </div>
 
-        {/* TDEE */}
         <div className="p-4 rounded-2xl bg-white border border-gray-100 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between text-gray-400 mb-2">
             <span className="text-xs font-semibold text-gray-500">TDEE (Tiêu thụ)</span>
@@ -82,7 +79,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
           <p className="text-[11px] text-gray-400 mt-2">Đã tính hệ số vận động</p>
         </div>
 
-        {/* Target Calories */}
         <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-200 flex flex-col justify-between">
           <div className="flex items-center justify-between text-emerald-100 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Khuyến nghị nạp</span>
@@ -96,7 +92,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
         </div>
       </div>
 
-      {/* Phân bổ Macronutrients (Đạm, Béo, Tinh bột) */}
       <div className="p-5 md:p-6 rounded-2xl bg-white border border-gray-100 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <h4 className="font-bold text-gray-800 text-sm md:text-base">
@@ -105,7 +100,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
           <span className="text-xs text-gray-400">100% Khẩu phần</span>
         </div>
 
-        {/* Visual Progress Bar */}
         <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden flex">
           <div
             style={{ width: `${macros.protein.percent}%` }}
@@ -124,9 +118,8 @@ const NutritionTargetCard = ({ healthProfile }) => {
           />
         </div>
 
-        {/* Macro Details Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-          {/* Protein */}
+
           <div className="p-3.5 rounded-xl bg-blue-50/60 border border-blue-100 flex items-center justify-between">
             <div>
               <span className="flex items-center gap-1.5 text-xs font-bold text-blue-800">
@@ -141,7 +134,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
             </div>
           </div>
 
-          {/* Fat */}
           <div className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-100 flex items-center justify-between">
             <div>
               <span className="flex items-center gap-1.5 text-xs font-bold text-amber-800">
@@ -156,7 +148,6 @@ const NutritionTargetCard = ({ healthProfile }) => {
             </div>
           </div>
 
-          {/* Carbs */}
           <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
             <div>
               <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
@@ -177,3 +168,4 @@ const NutritionTargetCard = ({ healthProfile }) => {
 };
 
 export default NutritionTargetCard;
+

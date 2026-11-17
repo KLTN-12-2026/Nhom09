@@ -51,7 +51,7 @@ const VnpayReturn = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-slate-50/50">
       <div className="w-full max-w-lg bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-        {/* Header Decorator */}
+
         <div className={`p-8 text-center text-white ${isSuccess ? 'bg-gradient-to-br from-emerald-600 to-teal-700' : 'bg-gradient-to-br from-rose-500 to-red-600'}`}>
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
             {loading ? (
@@ -74,7 +74,6 @@ const VnpayReturn = () => {
           </p>
         </div>
 
-        {/* Content Details */}
         <div className="p-6 sm:p-8 space-y-6">
           {loading ? (
             <div className="py-8 text-center text-slate-500 text-sm">

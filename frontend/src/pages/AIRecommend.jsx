@@ -27,7 +27,7 @@ const AIRecommend = () => {
     const fetchHistory = async () => {
       try {
         const { data } = await axiosClient.get('/ai/history');
-        setChatHistory(data.reverse()); // Reverse to show oldest first if backend sorts by newest
+        setChatHistory(data.reverse());
       } catch (error) {
         console.error(error);
       }
@@ -95,9 +95,6 @@ const AIRecommend = () => {
     );
   }
 
-
-
-
   const handleSendMessage = async (msgText) => {
     if (!msgText.trim() || loading) return;
 
@@ -141,7 +138,7 @@ const AIRecommend = () => {
 
   return (
     <div className="container mx-auto px-4 md:px-12 py-10 h-[calc(100vh-80px)] flex flex-col relative">
-      {/* Background elements */}
+
       <div className="absolute inset-0 z-[-1] overflow-hidden">
         <div className="blob bg-primary/10 w-96 h-96 rounded-full top-10 left-10"></div>
         <div className="blob bg-blue-300/20 w-80 h-80 rounded-full bottom-10 right-20"></div>
@@ -155,7 +152,7 @@ const AIRecommend = () => {
       </div>
 
       <div className="flex-1 glassmorphism rounded-3xl shadow-3d overflow-hidden flex flex-col max-w-4xl mx-auto w-full">
-        {/* Chat Area */}
+
         <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-6">
           {chatHistory.length === 0 && !loading && (
             <div className="h-full flex flex-col items-center justify-center text-gray-500 opacity-70">
@@ -166,14 +163,13 @@ const AIRecommend = () => {
 
           {chatHistory.map((chat) => (
             <div key={chat._id} className="space-y-4">
-              {/* User message */}
+
               <div className="flex justify-end">
                 <div className="bg-gray-100 p-4 rounded-2xl rounded-tr-sm max-w-[80%] shadow-sm">
                   {chat.message}
                 </div>
               </div>
 
-              {/* AI Response */}
               <div className="flex justify-start items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white shadow-md">
                   <Bot size={20} />
@@ -191,7 +187,6 @@ const AIRecommend = () => {
                     </div>
                   )}
 
-                  {/* Recommended Foods inside chat bubble */}
                   {chat.recommendedFoods && chat.recommendedFoods.length > 0 && (
                     <div className="mt-6 border-t border-[#E8EEE9] pt-4">
                       <p className="font-bold mb-3 text-primary">Món ăn đề xuất từ FoodCare:</p>
@@ -214,10 +209,9 @@ const AIRecommend = () => {
           ))}
         </div>
 
-        {/* Quick Chips */}
         <div className="px-6 py-3 flex gap-2 overflow-x-auto no-scrollbar border-t border-gray-100">
           {quickChips.map((chip, idx) => (
-            <button 
+            <button
               key={idx}
               onClick={() => handleSendMessage(chip)}
               className="whitespace-nowrap px-4 py-2 bg-white rounded-full text-sm shadow-sm border border-gray-200 text-gray-700 hover:bg-primary hover:text-white hover:border-primary transition-colors"
@@ -227,21 +221,20 @@ const AIRecommend = () => {
           ))}
         </div>
 
-        {/* Input Area */}
         <div className="p-4 bg-white/50 border-t border-gray-200">
-          <form 
+          <form
             onSubmit={(e) => { e.preventDefault(); handleSendMessage(message); }}
             className="flex items-center gap-3 bg-white p-2 rounded-full shadow-inner border border-gray-100"
           >
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="flex-1 bg-transparent px-4 py-2 outline-none"
               placeholder="Nhập tình trạng sức khỏe hoặc yêu cầu của bạn..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               disabled={loading}
             />
-            <button 
+            <button
               type="submit"
               disabled={loading || !message.trim()}
               className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary-dark transition-colors disabled:opacity-50"
@@ -256,3 +249,4 @@ const AIRecommend = () => {
 };
 
 export default AIRecommend;
+

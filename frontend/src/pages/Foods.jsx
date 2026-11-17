@@ -22,17 +22,14 @@ const Foods = () => {
   const [loading, setLoading] = useState(true);
   const [isSwitchingCategory, setIsSwitchingCategory] = useState(false);
 
-  // Đồng bộ giá trị input khi keyword trên URL thay đổi (theo chuẩn React)
   if (keywordParam !== prevKeyword) {
     setPrevKeyword(keywordParam);
     setSearchTerm(keywordParam);
   }
 
-  // Đường dẫn quay lại khi bấm từ chi tiết món
   const returnToFoodsQuery = searchParams.toString();
   const returnToFoods = returnToFoodsQuery ? `/foods?${returnToFoodsQuery}` : '/foods';
 
-  // 1. Tải danh mục một lần khi mount
   useEffect(() => {
     let isMounted = true;
     axiosClient.get('/categories')
@@ -46,7 +43,6 @@ const Foods = () => {
     };
   }, []);
 
-  // 2. Debounce cập nhật từ khóa lên URL khi người dùng gõ tìm kiếm
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       const trimmed = searchTerm.trim();
@@ -66,7 +62,6 @@ const Foods = () => {
     return () => clearTimeout(timeoutId);
   }, [searchTerm, keywordParam, setSearchParams]);
 
-  // 4. Tải danh sách món ăn khi danh mục hoặc từ khóa thay đổi (Cập nhật phản hồi tức thì, không cần load lại trang)
   useEffect(() => {
     let cancelled = false;
 
@@ -100,10 +95,9 @@ const Foods = () => {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [categorySlugParam, keywordParam]);
 
-  // Xử lý khi bấm nút chọn danh mục
   const handleCategorySelect = (slug) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -116,7 +110,6 @@ const Foods = () => {
     });
   };
 
-  // Kiểm tra xem danh mục có đang được chọn hay không (hỗ trợ cả slug, id, name hoặc slug có dấu cách)
   const isCategorySelected = (cat) => {
     if (!categorySlugParam) return false;
     const cleanParam = categorySlugParam.toLowerCase().trim();
@@ -134,7 +127,6 @@ const Foods = () => {
         Khám Phá <span className="text-primary">Thực Đơn</span>
       </h1>
 
-      {/* Thanh tìm kiếm */}
       <div className="mx-auto mb-8 max-w-xl">
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -165,7 +157,6 @@ const Foods = () => {
         </div>
       </div>
 
-      {/* Bộ lọc danh mục */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">
         <button
           type="button"
@@ -197,7 +188,6 @@ const Foods = () => {
         })}
       </div>
 
-      {/* Danh sách món ăn */}
       {loading ? (
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -277,7 +267,7 @@ const Foods = () => {
                         !food.isAvailable ? 'opacity-40 grayscale' : ''
                       }`}
                     />
-                    {/* Overlay Tạm hết */}
+
                     {!food.isAvailable && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/30 backdrop-blur-[1px]">
                         <span className="bg-gray-900/80 text-white text-sm font-bold px-4 py-1.5 rounded-full tracking-wide shadow-lg border border-white/20">
@@ -298,7 +288,6 @@ const Foods = () => {
                     </Link>
                     <p className="text-gray-500 text-sm mb-2 line-clamp-2 flex-1">{food.description}</p>
 
-                    {/* Điểm đánh giá */}
                     {food.ratingAverage > 0 && (
                       <div className="flex items-center gap-1.5 mb-3">
                         <div className="flex items-center">
@@ -365,3 +354,4 @@ const Foods = () => {
 };
 
 export default Foods;
+

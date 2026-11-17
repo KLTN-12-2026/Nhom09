@@ -6,7 +6,6 @@ import { Eye, EyeOff } from 'lucide-react';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-/* ─── floating food orbs config ─── */
 const ORBS = [
   { emoji: '🥗', size: 56, x: 8,  y: 12, dur: 7,  delay: 0   },
   { emoji: '🍜', size: 48, x: 85, y: 8,  dur: 9,  delay: 1.5 },
@@ -20,7 +19,6 @@ const ORBS = [
   { emoji: '🫐', size: 50, x: 42, y: 2,  dur: 7,  delay: 3.5 },
 ];
 
-/* ─── glowing particle config ─── */
 const PARTICLES = Array.from({ length: 28 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
@@ -46,14 +44,12 @@ const Login = () => {
     navigate(redirectPath, { replace: true });
   }, [location.state, navigate]);
 
-  // Tự động chuyển hướng nếu người dùng đã có phiên đăng nhập hợp lệ
   useEffect(() => {
     if (user) {
       redirectAfterLogin(user);
     }
   }, [user, redirectAfterLogin]);
 
-  // Lưu reference callback mới nhất để HMR/Strict Mode không làm mất state
   useEffect(() => {
     window.__google_login_callback = async ({ credential }) => {
       if (!credential) return;
@@ -102,7 +98,6 @@ const Login = () => {
           window.__google_gsi_initialized = true;
         }
 
-        // Xóa nội dung cũ và render lại nút Google vào DOM hiện tại
         googleButtonRef.current.innerHTML = '';
         window.google.accounts.id.renderButton(googleButtonRef.current, {
           type: 'icon',
@@ -111,7 +106,7 @@ const Login = () => {
           shape: 'circle',
           locale: 'vi',
         });
-        
+
         return true;
       } catch (err) {
         console.error('Lỗi khởi tạo Google button:', err);
@@ -150,7 +145,7 @@ const Login = () => {
 
   return (
     <>
-      {/* ── Inject keyframes ── */}
+
       <style>{`
         @keyframes floatY {
           0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
@@ -195,11 +190,9 @@ const Login = () => {
         .marquee-rtl { animation: marquee-rtl var(--mq-dur,28s) linear infinite; }
       `}</style>
 
-      {/* ── Full-page scene ── */}
       <div className="fixed inset-0 top-0 left-0 w-screen h-screen overflow-hidden -z-0"
            style={{ background: 'linear-gradient(135deg,#0f0c29 0%,#1a1035 25%,#1e3c72 55%,#0f3460 75%,#16213e 100%)' }}>
 
-        {/* ── Rotating giant rings ── */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {[520, 700, 900, 1100].map((sz, i) => (
             <div key={sz}
@@ -215,7 +208,6 @@ const Login = () => {
           ))}
         </div>
 
-        {/* ── Drifting blob lights ── */}
         {[
           { color:'rgba(22,132,91,0.22)', size:420, x:'10%', y:'5%',  dur:'22s' },
           { color:'rgba(139,92,246,0.15)', size:380, x:'65%', y:'60%', dur:'28s', delay:'4s' },
@@ -231,7 +223,6 @@ const Login = () => {
           }} />
         ))}
 
-        {/* ── Glowing particles ── */}
         {PARTICLES.map(p => (
           <div key={p.id} className="particle absolute rounded-full"
             style={{
@@ -251,7 +242,6 @@ const Login = () => {
           />
         ))}
 
-        {/* ── Floating food orbs ── */}
         {ORBS.map((o, i) => (
           <div key={i} className="orb-float absolute select-none pointer-events-none"
             style={{
@@ -265,7 +255,6 @@ const Login = () => {
           </div>
         ))}
 
-        {/* ── Grid overlay ── */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)',
@@ -273,7 +262,6 @@ const Login = () => {
           }}
         />
 
-        {/* ── 3D Marquee text ── */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden flex flex-col justify-around"
           style={{ perspective: '600px', perspectiveOrigin: '50% 50%' }}>
           {[
@@ -315,10 +303,8 @@ const Login = () => {
         </div>
       </div>
 
-      {/* ── Page wrapper (sits above background) ── */}
       <div className="relative z-10 flex items-center justify-center px-4 py-6 min-h-[calc(100vh-80px)] overflow-y-auto">
 
-        {/* ── Glassmorphism card ── */}
         <div className="login-card-anim w-full max-w-[420px]"
           style={{
             background: 'rgba(255,255,255,0.07)',
@@ -332,13 +318,11 @@ const Login = () => {
             overflowY: 'auto',
           }}>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 mb-8 group">
             <img src="/logo.png" alt="FoodCare" className="h-9 w-auto object-contain drop-shadow-lg transition-transform group-hover:scale-110" />
             <span className="text-xl font-black text-white tracking-tight drop-shadow">FoodCare</span>
           </Link>
 
-          {/* Heading */}
           <h1 className="text-3xl font-black mb-1"
             style={{
               background: 'linear-gradient(90deg,#16845B,#10b981,#34d399,#16845B)',
@@ -356,9 +340,8 @@ const Login = () => {
             </Link>
           </p>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
+
             <div>
               <label htmlFor="login-email" className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">
                 Email
@@ -380,7 +363,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label htmlFor="login-password" className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-1.5">
                 Mật khẩu
@@ -411,7 +393,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isLoading}
@@ -435,14 +416,12 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ background:'rgba(255,255,255,0.12)' }} />
             <span className="text-xs text-white/35 font-medium whitespace-nowrap">Hoặc đăng nhập với</span>
             <div className="flex-1 h-px" style={{ background:'rgba(255,255,255,0.12)' }} />
           </div>
 
-          {/* Google */}
           <div className="flex justify-center">
             <div
               className="flex items-center justify-center rounded-full transition-transform hover:scale-105"
@@ -456,7 +435,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Footer */}
           <p className="text-center text-white/20 text-xs mt-8">© 2026 FoodCare · Đà Nẵng, Việt Nam</p>
         </div>
       </div>
@@ -465,3 +443,4 @@ const Login = () => {
 };
 
 export default Login;
+

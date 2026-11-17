@@ -12,7 +12,6 @@ const avatarUploadDirectory = path.resolve(__dirname, '../uploads/avatars');
 const reviewUploadDirectory = path.resolve(__dirname, '../uploads/reviews');
 const foodUploadDirectory = path.resolve(__dirname, '../uploads/foods');
 
-// Tạo thư mục nếu chưa có
 [avatarUploadDirectory, reviewUploadDirectory, foodUploadDirectory].forEach((dir) => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
@@ -33,10 +32,9 @@ const allowedVideoTypes = new Map([
   ['video/quicktime', '.mov'],
 ]);
 
-// Multer dùng memory storage – sharp xử lý và nén trước khi ghi disk
 const memoryUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB raw max
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter(req, file, cb) {
     const ext = path.extname(file.originalname || '').toLowerCase();
     const validExts = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.jfif'];
@@ -49,7 +47,6 @@ const memoryUpload = multer({
   },
 });
 
-// Helper: nén ảnh qua sharp → lưu ra disk → trả về filename
 async function compressAndSave(buffer, destDir, filenameBase, { width = 900, quality = 82 } = {}) {
   const filename = `${filenameBase}-${Date.now()}.webp`;
   const destPath = path.join(destDir, filename);
@@ -60,9 +57,6 @@ async function compressAndSave(buffer, destDir, filenameBase, { width = 900, qua
   return filename;
 }
 
-// ── Avatar upload ──
-// @route   POST /api/upload/avatar
-// @access  Private
 router.post('/avatar', protect, memoryUpload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'Không có ảnh nào được tải lên.' });
   try {
@@ -80,9 +74,6 @@ router.post('/avatar', protect, memoryUpload.single('image'), async (req, res) =
   }
 });
 
-// ── Food image upload (Admin) ──
-// @route   POST /api/upload/food-image
-// @access  Private
 router.post('/food-image', protect, memoryUpload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'Không có ảnh nào được tải lên.' });
   try {
@@ -100,7 +91,6 @@ router.post('/food-image', protect, memoryUpload.single('image'), async (req, re
   }
 });
 
-// ── Review media upload (ảnh + video) ──
 const uploadReviewMedia = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 },
@@ -110,8 +100,6 @@ const uploadReviewMedia = multer({
   },
 });
 
-// @route   POST /api/upload/review-media
-// @access  Private
 router.post('/review-media', protect, uploadReviewMedia.array('media', 5), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: 'Không có file nào được tải lên.' });
@@ -122,14 +110,14 @@ router.post('/review-media', protect, uploadReviewMedia.array('media', 5), async
       req.files.map(async (f) => {
         const isVideo = allowedVideoTypes.has(f.mimetype);
         if (isVideo) {
-          // Video: lưu trực tiếp (không nén qua sharp)
+
           const ext = allowedVideoTypes.get(f.mimetype);
           const filename = `review-${req.user._id}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}${ext}`;
           const destPath = path.join(reviewUploadDirectory, filename);
           fs.writeFileSync(destPath, f.buffer);
           return { url: `${baseUrl}/uploads/reviews/${filename}`, type: 'video', name: f.originalname, size: f.size };
         } else {
-          // Ảnh: nén + convert sang WebP qua sharp
+
           const filename = `review-${req.user._id}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.webp`;
           const destPath = path.join(reviewUploadDirectory, filename);
           await sharp(f.buffer)
@@ -147,7 +135,6 @@ router.post('/review-media', protect, uploadReviewMedia.array('media', 5), async
   }
 });
 
-// Xử lý lỗi Multer (giới hạn dung lượng, sai định dạng, thiếu boundary) trả về 400 thay vì 500
 router.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
@@ -162,3 +149,4 @@ router.use((err, req, res, next) => {
 });
 
 export default router;
+
